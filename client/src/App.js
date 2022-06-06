@@ -1,8 +1,11 @@
+import LogInButton from "./components/LogInButton";
+import LogOutButton from "./components/LogOutButton";
 
 const App = () => {
   return (
     <div>
-      My app!
+      <LogInButton/>
+      <LogOutButton/>
     </div>
   );
 }
