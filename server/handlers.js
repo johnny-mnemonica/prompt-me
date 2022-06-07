@@ -6,7 +6,7 @@ const { APP_ID } = process.env;
 const getDummyUsers = async (req, res) => {
     try {
         const options = {
-            uri: 'https://dummyapi.io/data/v1/user',
+            uri: 'https://dummyapi.io/data/v1/user?limit=10',
             headers: {"app-id": APP_ID},
         }
         const result = await request(options)
@@ -23,7 +23,7 @@ const getUserById = async (req, res) => {
     try {
         const id = req.params.id;
         const options = {
-            uri: 'https://dummyapi.io/data/v1/user',
+            uri: 'https://dummyapi.io/data/v1/user?limit=10',
             headers: {"app-id": APP_ID},
         }
         const result = await request(options)
