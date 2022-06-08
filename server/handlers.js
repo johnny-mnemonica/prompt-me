@@ -13,7 +13,7 @@ const options = {
     useUnifiedTopology: true
 }
 
-// get dummy users - API
+// get dummy users - API - NOTE: This is for demo purposes only.
 const getDummyUsers = async (req, res) => {
     try {
         const options = {
@@ -29,7 +29,7 @@ const getDummyUsers = async (req, res) => {
 }
 
 
-// get dummy user by ID
+// get dummy user by ID - NOTE: This is for demo purposes only.
 const getUserById = async (req, res) => {
     try {
         const id = req.params.id;
@@ -69,7 +69,7 @@ const getPostsbyUserId = async (req, res) => {
         if(!data){
             res
             .status(404)
-            .json({status: 404, data: [], message: "User ID does not exist"})
+            .json({status: 404, data: _id, message: "User ID does not exist"})
         } else {
             const result = data.posts;
             res
@@ -118,10 +118,317 @@ const getPostsById = async (req, res) => {
     }
 }
 
+// post - create new user
+const createNewUser = async (req, res) => {
+    try {
+        const client = new
+        MongoClient(MONGO_URI, options);
+    
+        await client.connect();
+    
+        const db = client.db("promptme");
+    
+        const data = await db.collection("users").findOne({_id: req.body._id});
+
+        if(!data){
+            const userObj = req.body
+            const postObj = {_id: req.body._id, posts: []}
+
+            await db.collection("users").insertOne(userObj);
+            await db.collection("posts").insertOne(postObj);
+
+            client.close();
+
+            res
+            .status(200)
+            .json({status: 200, message: "Success! User has been created"});
+
+        } else {
+            res
+            .status(418)
+            .json({status: 418, data: req.body._id, message: "User already exists"});
+        }
+
+    } catch (err) {
+        res
+        .status(500)
+        .json({status: 500, message: err.message});
+    }
+}
+
+// post - create new blog post
+const createNewBlogPost = async (req, res) => {
+    try {
+        const client = new
+        MongoClient(MONGO_URI, options);
+    
+        await client.connect();
+    
+        const db = client.db("promptme");
+    
+        const data = req.body;
+
+        await db.collection("posts").updateOne({_id: req.body.postAuthorId}, {"$push" :{"posts": data}});
+
+        client.close();
+
+        res
+        .status(200)
+        .json({status: 200, message: "Success! Post created successfully"});
+
+    } catch (err) {
+        res
+        .status(500)
+        .json({status: 500, message: err.message});
+    }
+}
+
+// patch - follow friend
+
+const followFriend = async (req, res) => {
+    try {
+        const client = new
+        MongoClient(MONGO_URI, options);
+    
+        await client.connect();
+    
+        const db = client.db("promptme");
+    
+        const user_id = req.params.userid;
+        const friend_id = req.params.friendid;
+        
+        //TODO: validate whether user is following the person already
+
+        //TODO: validate whether friend exists in database(dummy user - for demo purposes only)
+
+        await db.collection("users").updateOne({_id: user_id}, {"$push" :{"following": friend_id}});
+
+        client.close();
+
+        res
+        .status(200)
+        .json({status: 200, message: "Success! You made a new friend!"});
+
+    } catch (err) {
+        res
+        .status(500)
+        .json({status: 500, message: err.message});
+    }
+}
+
+// patch - unfollow friend
+
+const unfollowFriend = async (req, res) => {
+    try {
+        const client = new
+        MongoClient(MONGO_URI, options);
+    
+        await client.connect();
+    
+        const db = client.db("promptme");
+    
+        const user_id = req.params.userid;
+        const friend_id = req.params.friendid;
+        
+        //TODO: validate whether user is following the person already
+
+        //TODO: validate whether friend exists in database(dummy user - for demo purposes only)
+
+        await db.collection("users").updateOne({_id: user_id}, {"$pull" :{"following": friend_id}});
+
+        client.close();
+
+        res
+        .status(200)
+        .json({status: 200, message: "Success! You made a new enemy!"});
+
+    } catch (err) {
+        res
+        .status(500)
+        .json({status: 500, message: err.message});
+    }
+}
+
+// put - comment on post
+const addComment = async (req, res) => {
+    try {
+        const client = new
+        MongoClient(MONGO_URI, options);
+    
+        await client.connect();
+    
+        const db = client.db("promptme");
+
+        const post_id = req.params.id;
+        const comment = req.body;
+
+        //TODO: check if postid exists
+
+        await db.collection("posts").updateOne({"posts._id": post_id}, {"$push" :{"posts.$.comments": comment}});
+
+        client.close();
+
+        res
+        .status(200)
+        .json({status: 200, message: "Success! Comment created successfully"});
+
+    } catch (err) {
+        res
+        .status(500)
+        .json({status: 500, message: err.message});
+    }
+}
+
+// patch - like post
+const likePost = async (req, res) => {
+    try {
+        const client = new
+        MongoClient(MONGO_URI, options);
+    
+        await client.connect();
+    
+        const db = client.db("promptme");
+    
+        const user_id = req.params.userid;
+        const post_id = req.params.postid;
+
+        console.log(user_id);
+        console.log(post_id);
+        
+        //TODO: validate whether the post exists
+
+        //TODO: validate whether post is liked by the user already
+
+        await db.collection("posts").updateOne({"posts._id": post_id}, {"$push" :{"posts.$.likedBy": user_id}});
+
+        client.close();
+
+        res
+        .status(200)
+        .json({status: 200, message: "Success! Post liked successfully!"});
+
+    } catch (err) {
+        res
+        .status(500)
+        .json({status: 500, message: err.message});
+    }
+}
+
+// patch - unlike post
+const unlikePost = async (req, res) => {
+    try {
+        const client = new
+        MongoClient(MONGO_URI, options);
+    
+        await client.connect();
+    
+        const db = client.db("promptme");
+    
+        const user_id = req.params.userid;
+        const post_id = req.params.postid;
+
+        console.log(user_id);
+        console.log(post_id);
+        
+        //TODO: validate whether the post exists
+
+        //TODO: validate whether post is liked by the user already
+
+        await db.collection("posts").updateOne({"posts._id": post_id}, {"$pull" :{"posts.$.likedBy": user_id}});
+
+        client.close();
+
+        res
+        .status(200)
+        .json({status: 200, message: "Success! Post unliked successfully!"});
+
+    } catch (err) {
+        res
+        .status(500)
+        .json({status: 500, message: err.message});
+    }
+}
+
+// delete post by id
+const deleteBlogPost = async (req, res) => {
+    try {
+        const client = new
+        MongoClient(MONGO_URI, options);
+    
+        await client.connect();
+    
+        const db = client.db("promptme");
+    
+        const post_id = req.params.postid;
+        const user_id = req.params.userid
+
+        //TODO: verify that postID exists
+        //TODO: verify that the user is authorized to delete blog post
+
+        const result = await db.collection("posts").updateOne({_id: user_id}, {"$pull" :{"posts": {_id: post_id}}});
+
+        client.close();
+
+        //if result.modifiedCount === 1
+        
+        res
+        .status(200)
+        .json({status: 200, message: "Success! Post deleted successfully"});
+
+    } catch (err) {
+        res
+        .status(500)
+        .json({status: 500, message: err.message});
+    }
+}
+
+// delete comment by id
+const deleteComment = async (req, res) => {
+    try {
+        const client = new
+        MongoClient(MONGO_URI, options);
+    
+        await client.connect();
+    
+        const db = client.db("promptme");
+    
+        const post_id = req.params.postid;
+        const comment_id = req.params.commentid;
+
+        //TODO: verify that commentID exists
+        //TODO: verify that the user is authorized to delete comment
+
+        const result = await db.collection("posts").updateOne({"posts._id": post_id}, {"$pull" :{"posts.$.comments": {_id: comment_id}}});
+
+        client.close();
+
+        console.log(result);
+
+        //if result.modifiedCount === 1
+        
+        res
+        .status(200)
+        .json({status: 200, message: "Success! Comment deleted successfully"});
+
+    } catch (err) {
+        res
+        .status(500)
+        .json({status: 500, message: err.message});
+    }
+}
 
 module.exports = {
     getDummyUsers,
     getUserById,
     getPostsbyUserId,
-    getPostsById
+    getPostsById,
+    createNewUser,
+    createNewBlogPost,
+    followFriend,
+    unfollowFriend,
+    addComment,
+    likePost,
+    unlikePost,
+    deleteBlogPost,
+    deleteComment
 }
