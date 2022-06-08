@@ -3,7 +3,7 @@
 const express = require('express');
 const morgan = require('morgan');
 const port = 8000;
-const {getDummyUsers, getUserById} = require('./handlers');
+const {getDummyUsers, getUserById, getPostsbyUserId, getPostsById} = require('./handlers');
 
 express()
   .use(function(req, res, next) {
@@ -27,16 +27,23 @@ express()
 
 .get("/api/getusers", getDummyUsers)
 .get("/api/getuser/:id", getUserById)
+.get("/api/getposts/:id", getPostsbyUserId)
+.get("/api/getpost/:id", getPostsById)
 
 
 //TO DO
 //GET user by ID - DONE
-//GET posts by user
-//GET post by ID
+//GET posts by user - DONE
+//GET post by ID - DONE
+//POST - create user data structure
+//POST - create new post
 //PUT comments
 //PUT likes
-//PATCH edit post
+//PATCH edit post 
+//PATCH edit comment (optional)
 //DELETE post by ID
+//DELETE comment by ID
+
 
 // test endpoint
 .get('/test', (req, res) => {
