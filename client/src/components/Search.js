@@ -32,10 +32,10 @@ const Search = () => {
             <button type="submit">search</button>
         </form>
         {
-            errMessage ?
+            userData.length === 0 ?
                 <span>{errMessage}</span>
             :
-                <UserLookup user={userData}/>
+                <UserLookup friend={userData}/>
         }
         </>
     )

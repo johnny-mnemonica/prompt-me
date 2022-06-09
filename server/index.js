@@ -49,8 +49,8 @@ express()
 .get("/api/getuser/:id", getUserById)
 .post("/api/createuser", createNewUser)
 .post("/api/createpost", createNewBlogPost)
-.patch("/api/follow/:userid/:friendid", followFriend)
-.patch("/api/unfollow/:userid/:friendid", unfollowFriend)
+.patch("/api/follow", followFriend)
+.patch("/api/unfollow", unfollowFriend)
 .put("/api/:id/addcomment", addComment)
 .patch("/api/:userid/likepost/:postid", likePost)
 .patch("/api/:userid/unlikepost/:postid", unlikePost)
@@ -76,6 +76,7 @@ express()
 //PATCH edit post (stretch)
 //PATCH edit comment (stretch)
 //DELETE user (stretch)
+
 
 
 // test endpoint
