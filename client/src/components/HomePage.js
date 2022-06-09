@@ -4,33 +4,36 @@ import { useEffect } from "react";
 
 const Homepage = () => {
 
-    const {isAuthenticated, isLoading} = useAuth0();
-    const navigate = useNavigate();
+    const {isAuthenticated, isLoading, user} = useAuth0();
 
-    console.log(isAuthenticated, "is auth");
-    console.log(isLoading, "is loading")
     
-    // if(isLoading){
-    //     return (
-    //         <div>
-    //             Loading....
-    //         </div>
 
-    //     )
-    // }
 
-    // if(!isAuthenticated){
-    //     navigate('/');
-    // }
-    // useEffect(() => {
-    //     if(!isAuthenticated){
-    //         navigate('/');
-    //     }
-    // }, []) 
+    // console.log(isAuthenticated, "is auth");
+    // console.log(isLoading, "is loading")
+    
+    useEffect(() => {
+        if(isAuthenticated){
+            fetch("/api/createuser", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    "Accept": "application/json"
+                },
+                body: JSON.stringify({_id: user.sub, given_name: user.given_name, family_name: user.family_name, name: user.name, nickname: user.nickname, imgSrc: user.picture, email: user.email})
+                })
+                .then((res) => res.json())
+                .then((data) => console.log(data.message))
+                .catch((err) => {
+                    console.log(err);
+                })
+        }
+    }, [])
+
 
     return (
         <>
-            You are logged in!
+            Welcome, {user.given_name}.
         </>
     )
 }

@@ -211,7 +211,7 @@ const createNewUser = async (req, res) => {
         const data = await db.collection("users").findOne({_id: req.body._id});
 
         if(!data){
-            const userObj = req.body
+            const userObj = {...req.body, following: []}
             const postObj = {_id: req.body._id, posts: []}
 
             await db.collection("users").insertOne(userObj);
