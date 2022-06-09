@@ -10,6 +10,9 @@ import { useAuth0 } from "@auth0/auth0-react";
 import Loading from './components/Loading';
 import Unauthorized from './components/Unauthorized';
 import CreatePost from './components/CreatePost';
+import Confirmation from './components/Confirmation';
+import Profile from './components/Profile';
+import Search from './components/Search';
 
 const App = () => {
 
@@ -28,16 +31,25 @@ const App = () => {
           <>
           <Route path="/home" element={<Loading/>} />
           <Route path="/create-post" element={<Loading/>} />
+          <Route path="/create-post/success" element={<Loading/>} />
+          <Route path="/profile/:id" element={<Loading/>} />
+          <Route path="/search" element={<Loading/>} />
           </>
         : !isAuthenticated ? 
           <>
           <Route path="/home" element={<Unauthorized/>}/>
           <Route path="/create-post" element={<Unauthorized/>}/>
+          <Route path="/create-post/success" element={<Unauthorized/>}/>
+          <Route path="/profile/:id" element={<Unauthorized/>}/>
+          <Route path="/search" element={<Unauthorized/>} />
           </>
         :
           <>
           <Route path="/home" element={<Homepage/>} /> 
           <Route path="/create-post" element={<CreatePost/>} />
+          <Route path="/create-post/success" element={<Confirmation/>}/>
+          <Route path="/profile/:id" element={<Profile/>}/>
+          <Route path="/search" element={<Search/>} />
           </> 
       }
             <Route path="*" element={<NotFound/>}/>

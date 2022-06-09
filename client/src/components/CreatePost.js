@@ -2,9 +2,10 @@ import styled from "styled-components";
 import { useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { v4 as uuidv4 } from 'uuid';
+import { useNavigate } from "react-router-dom";
 
 const CreatePost = () => {
-
+    const navigate = useNavigate();
     const {user} = useAuth0();
 
     const [postTitle, setPostTitle] = useState(null);
@@ -27,6 +28,7 @@ const CreatePost = () => {
             })
             .then((res) => res.json())
             .then((data) => console.log(data.message))
+            .then(() => navigate('/create-post/success'))
             // .then((data) => {
             // flightDataHandler(data.data)
             // })

@@ -39,6 +39,16 @@ const Homepage = () => {
                     create new post
                 </button>
             </Link>
+            <Link to={`/profile/${user.sub}`}>
+                <button>
+                    my profile
+                </button>
+            </Link>
+            <Link to={`/search`}>
+                <button>
+                    find friends
+                </button>
+            </Link>
         </>
     )
 }
