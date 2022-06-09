@@ -9,6 +9,7 @@ import NotFound from './components/NotFound';
 import { useAuth0 } from "@auth0/auth0-react";
 import Loading from './components/Loading';
 import Unauthorized from './components/Unauthorized';
+import CreatePost from './components/CreatePost';
 
 const App = () => {
 
@@ -21,14 +22,23 @@ const App = () => {
     <Router>
         <NavBar/>
         <Routes>
-            <Route path="/" element={<SplashMain/>} />
-            <Route path="/about" element={<About/>} /> 
+          <Route path="/" element={<SplashMain/>} />
+          <Route path="/about" element={<About/>} /> 
         {isLoading ?
+          <>
           <Route path="/home" element={<Loading/>} />
+          <Route path="/create-post" element={<Loading/>} />
+          </>
         : !isAuthenticated ? 
-        <Route path="/home" element={<Unauthorized/>}/>
+          <>
+          <Route path="/home" element={<Unauthorized/>}/>
+          <Route path="/create-post" element={<Unauthorized/>}/>
+          </>
         :
-        <Route path="/home" element={<Homepage/>} /> 
+          <>
+          <Route path="/home" element={<Homepage/>} /> 
+          <Route path="/create-post" element={<CreatePost/>} />
+          </> 
       }
             <Route path="*" element={<NotFound/>}/>
         </Routes>

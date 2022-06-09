@@ -1,5 +1,6 @@
 const request = require("request-promise");
 require("dotenv").config();
+
 const { APP_ID, MONGO_URI } = process.env;
 
 // setting up my mongo connexion
@@ -248,7 +249,7 @@ const createNewBlogPost = async (req, res) => {
     
         const db = client.db("promptme");
     
-        const data = req.body;
+        const data = {...req.body, comments: [], likedBy: []};
 
         await db.collection("posts").updateOne({_id: req.body.postAuthorId}, {"$push" :{"posts": data}});
 

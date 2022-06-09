@@ -2,14 +2,29 @@ import LogInButton from "./LogInButton";
 import { Link } from "react-router-dom";
 import LogOutButton from "./LogOutButton";
 import styled from 'styled-components';
+import { useAuth0 } from "@auth0/auth0-react";
 
 
 const NavBar = () => {
+
+  const {isAuthenticated} = useAuth0();
+
   return (
     <Wrapper>
-      <Span>
-        prompt.me
-      </Span>
+      { 
+      !isAuthenticated ?
+        <StyledLink to="/">
+        <Span>
+          prompt.me
+        </Span>
+        </StyledLink>
+      :
+        <StyledLink to="/home">
+        <Span>
+          prompt.me
+        </Span>
+        </StyledLink>
+      }
       <LogInButton/>
       <LogOutButton/>
       <Link to="/about">
@@ -18,6 +33,11 @@ const NavBar = () => {
     </Wrapper>
   );
 }
+
+const StyledLink = styled(Link)`
+text-decoration: none;
+outline: none;
+`
 
 const Span = styled.span`
 font-family: var(--font-logo);
