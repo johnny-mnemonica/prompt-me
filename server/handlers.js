@@ -13,7 +13,9 @@ const options = {
     useUnifiedTopology: true
 }
 
-// get dummy users - API - NOTE: This is for demo purposes only.
+//////////////////////////////////////////////////////////
+
+// GET dummy users - API - NOTE: This is for demo purposes only.
 const getDummyUsers = async (req, res) => {
     try {
         const options = {
@@ -28,9 +30,10 @@ const getDummyUsers = async (req, res) => {
     }
 }
 
+//////////////////////////////////////////////////////////
 
-// get dummy user by ID - NOTE: This is for demo purposes only.
-const getUserById = async (req, res) => {
+// GET dummy user by ID - NOTE: This is for demo purposes only.
+const getDummyUserById = async (req, res) => {
     try {
         const id = req.params.id;
         const options = {
@@ -46,12 +49,85 @@ const getUserById = async (req, res) => {
         } else {
             res.status(200).json({ status: 200, data: user });
         }
+
     } catch (err) {
         res.status(500).json({ status: 500, message: err.message});
     }
 }
 
-// get posts by userID
+//////////////////////////////////////////////////////////
+
+//GET all users (in database - not using this for demo)
+const getUsers = async (req, res) => {
+    try {
+        const client = new
+        MongoClient(MONGO_URI, options);
+    
+        await client.connect();
+    
+        const db = client.db("promptme");
+    
+        const data = await db.collection("users").find().toArray();
+
+        client.close();
+        
+        if(data.length === 0){
+            res
+            .status(404)
+            .json({status: 404, message: "Error: No users found."})
+        } else {
+            res
+            .status(200)
+            .json({status: 200, data: data})
+        }
+    
+    } catch (err) {
+        res
+        .status(500)
+        .json({status: 500, message: err.stack})
+        console.log(err.message);
+    }
+}
+
+//////////////////////////////////////////////////////////
+
+//GET user by ID (in database - not using this for demo)
+const getUserById = async (req, res) => {
+    try {
+        const client = new
+        MongoClient(MONGO_URI, options);
+    
+        await client.connect();
+        
+        const db = client.db("promptme");
+    
+        const _id = req.params.id;
+
+        const data = await db.collection("users").findOne({_id});
+
+        client.close();
+        
+        if(!data){
+            res
+            .status(404)
+            .json({status: 404, message: "Error: User ID does not exist."})
+        } else {
+            res
+            .status(200)
+            .json({status: 200, data: data})
+        }
+    
+    } catch (err) {
+        res
+        .status(500)
+        .json({status: 500, message: err.stack})
+        console.log(err.message);
+    }
+}
+
+//////////////////////////////////////////////////////////
+
+// GET posts by userID
 const getPostsbyUserId = async (req, res) => {
     try {
         const client = new
@@ -84,7 +160,9 @@ const getPostsbyUserId = async (req, res) => {
     }
 }
 
-// get posts by id
+//////////////////////////////////////////////////////////
+
+// GET posts by id
 const getPostsById = async (req, res) => {
     try {
         const client = new
@@ -118,7 +196,9 @@ const getPostsById = async (req, res) => {
     }
 }
 
-// post - create new user
+//////////////////////////////////////////////////////////
+
+// POST - create new user
 const createNewUser = async (req, res) => {
     try {
         const client = new
@@ -156,7 +236,9 @@ const createNewUser = async (req, res) => {
     }
 }
 
-// post - create new blog post
+//////////////////////////////////////////////////////////
+
+// POST - create new blog post
 const createNewBlogPost = async (req, res) => {
     try {
         const client = new
@@ -183,31 +265,56 @@ const createNewBlogPost = async (req, res) => {
     }
 }
 
-// patch - follow friend
+//////////////////////////////////////////////////////////
 
+// PATCH - follow friend
 const followFriend = async (req, res) => {
     try {
         const client = new
         MongoClient(MONGO_URI, options);
-    
+
         await client.connect();
     
         const db = client.db("promptme");
     
         const user_id = req.params.userid;
         const friend_id = req.params.friendid;
-        
-        //TODO: validate whether user is following the person already
 
-        //TODO: validate whether friend exists in database(dummy user - for demo purposes only)
+        // validate whether userid exists
+        const userData = await db.collection("users").findOne({_id: user_id});
 
-        await db.collection("users").updateOne({_id: user_id}, {"$push" :{"following": friend_id}});
+        if(!userData){
+            return res
+            .status(404)
+            .json({status: 404, data: user_id, message: "Error: User ID does not exist"});
+        }
+
+        // NOTE: normally i would validate if friend id exists, but because we're using dummy users, i've skipped this step for now. 
+
+        // validate whether the user is following the friend already
+        const followingArray = userData.following
+
+        const isFollowing = followingArray.includes(friend_id);
+
+        if(isFollowing){
+            return res
+            .status(400)
+            .json({status: 400, data: friend_id, message: "Error: You are already following this user!"});
+        } 
+
+        const result = await db.collection("users").updateOne({_id: user_id}, {"$push" :{"following": friend_id}});
 
         client.close();
 
-        res
-        .status(200)
-        .json({status: 200, message: "Success! You made a new friend!"});
+        if(result.modifiedCount === 1){
+            res
+            .status(200)
+            .json({status: 200, message: "Success! Follow was successful!"});
+        } else {
+            res
+            .status(400)
+            .json({status: 400, data: comment, message: "Something went wrong! Please try again or contact support for more details."});
+        }
 
     } catch (err) {
         res
@@ -216,8 +323,9 @@ const followFriend = async (req, res) => {
     }
 }
 
-// patch - unfollow friend
+//////////////////////////////////////////////////////////
 
+// PATCH - unfollow friend
 const unfollowFriend = async (req, res) => {
     try {
         const client = new
@@ -230,17 +338,41 @@ const unfollowFriend = async (req, res) => {
         const user_id = req.params.userid;
         const friend_id = req.params.friendid;
         
-        //TODO: validate whether user is following the person already
+        // validate whether userid exists
+        const userData = await db.collection("users").findOne({_id: user_id});
 
-        //TODO: validate whether friend exists in database(dummy user - for demo purposes only)
+        if(!userData){
+            return res
+            .status(404)
+            .json({status: 404, data: user_id, message: "Error: User ID does not exist"});
+        }
 
-        await db.collection("users").updateOne({_id: user_id}, {"$pull" :{"following": friend_id}});
+        // NOTE: normally i would validate if friend id exists, but because we're using dummy users, i've skipped this step for now. 
+
+        // validate whether the user is following the friend 
+        const followingArray = userData.following
+
+        const isFollowing = followingArray.includes(friend_id);
+
+        if(!isFollowing){
+            return res
+            .status(400)
+            .json({status: 400, data: friend_id, message: "Error: You were never following this user!"});
+        } 
+
+        const result = await db.collection("users").updateOne({_id: user_id}, {"$pull" :{"following": friend_id}});
 
         client.close();
 
-        res
-        .status(200)
-        .json({status: 200, message: "Success! You made a new enemy!"});
+        if(result.modifiedCount === 1){
+            res
+            .status(200)
+            .json({status: 200, message: "Success! You made a new enemy!"});
+        } else {
+            res
+            .status(400)
+            .json({status: 400, data: comment, message: "Something went wrong! Please try again or contact support for more details."});
+        }
 
     } catch (err) {
         res
@@ -248,6 +380,8 @@ const unfollowFriend = async (req, res) => {
         .json({status: 500, message: err.message});
     }
 }
+
+//////////////////////////////////////////////////////////
 
 // put - comment on post
 const addComment = async (req, res) => {
@@ -262,15 +396,31 @@ const addComment = async (req, res) => {
         const post_id = req.params.id;
         const comment = req.body;
 
-        //TODO: check if postid exists
+        //validate whether postid exists
 
-        await db.collection("posts").updateOne({"posts._id": post_id}, {"$push" :{"posts.$.comments": comment}});
+        const postData = await db.collection("posts").findOne({"posts._id": post_id});
+
+        if(!postData){
+            return res
+            .status(404)
+            .json({status: 404, data: post_id, message: "Error: Post ID does not exist"});
+        }
+
+        const result = await db.collection("posts").updateOne({"posts._id": post_id}, {"$push" :{"posts.$.comments": comment}});
+
+        console.log(result);
 
         client.close();
 
-        res
-        .status(200)
-        .json({status: 200, message: "Success! Comment created successfully"});
+        if(result.modifiedCount === 1){
+            res
+            .status(200)
+            .json({status: 200, message: "Success! Comment created successfully"});
+        } else {
+            res
+            .status(400)
+            .json({status: 400, data: comment, message: "Something went wrong! Please try again or contact support for more details."});
+        }
 
     } catch (err) {
         res
@@ -278,6 +428,8 @@ const addComment = async (req, res) => {
         .json({status: 500, message: err.message});
     }
 }
+
+//////////////////////////////////////////////////////////
 
 // patch - like post
 const likePost = async (req, res) => {
@@ -291,21 +443,54 @@ const likePost = async (req, res) => {
     
         const user_id = req.params.userid;
         const post_id = req.params.postid;
-
-        console.log(user_id);
-        console.log(post_id);
         
-        //TODO: validate whether the post exists
+        //validate whether the post exists
 
-        //TODO: validate whether post is liked by the user already
+        const postData = await db.collection("posts").findOne({"posts._id": post_id});
 
-        await db.collection("posts").updateOne({"posts._id": post_id}, {"$push" :{"posts.$.likedBy": user_id}});
+        console.log(postData);
+
+        if(!postData){
+            return res
+            .status(404)
+            .json({status: 404, data: post_id, message: "Error: Post ID does not exist"});
+        }
+
+        //validate whether the user exists
+
+        const userData = await db.collection("users").findOne({_id: user_id});
+
+        if(!userData){
+            return res
+            .status(404)
+            .json({status: 404, data: user_id, message: "Error: User ID does not exist"});
+        }
+
+        //validate whether post is liked by the user already
+
+        const likesArray = postData.posts.find((post) => post._id === post_id).likedBy
+
+        const isLiked = likesArray.includes(user_id);
+
+        if(isLiked){
+            return res
+            .status(400)
+            .json({status: 400, data: post_id, message: "Error: You've already liked this post!"});
+        } 
+
+        const result = await db.collection("posts").updateOne({"posts._id": post_id}, {"$push" :{"posts.$.likedBy": user_id}});
 
         client.close();
 
+        if(result.modifiedCount === 1){
         res
         .status(200)
         .json({status: 200, message: "Success! Post liked successfully!"});
+        } else {
+            res
+            .status(400)
+            .json({status: 400, data: post_id, message: "Something went wrong! Please try again or contact support for more details."});
+        }
 
     } catch (err) {
         res
@@ -313,6 +498,8 @@ const likePost = async (req, res) => {
         .json({status: 500, message: err.message});
     }
 }
+
+//////////////////////////////////////////////////////////
 
 // patch - unlike post
 const unlikePost = async (req, res) => {
@@ -330,17 +517,41 @@ const unlikePost = async (req, res) => {
         console.log(user_id);
         console.log(post_id);
         
-        //TODO: validate whether the post exists
+        //validate whether the post exists
 
-        //TODO: validate whether post is liked by the user already
+        const postData = await db.collection("posts").findOne({"posts._id": post_id});
 
-        await db.collection("posts").updateOne({"posts._id": post_id}, {"$pull" :{"posts.$.likedBy": user_id}});
+        if(!postData){
+            return res
+            .status(404)
+            .json({status: 404, data: post_id, message: "Error: Post ID does not exist"});
+        }
+
+       //validate whether post is liked by the user already
+
+        const likesArray = postData.posts.find((post) => post._id === post_id).likedBy
+
+        const isLiked = likesArray.includes(user_id);
+
+        if(!isLiked){
+            return res
+            .status(400)
+            .json({status: 400, data: post_id, message: "Error: You haven't liked this post yet!"});
+        } 
+
+        const result = await db.collection("posts").updateOne({"posts._id": post_id}, {"$pull" :{"posts.$.likedBy": user_id}});
 
         client.close();
 
-        res
-        .status(200)
-        .json({status: 200, message: "Success! Post unliked successfully!"});
+        if(result.modifiedCount === 1){
+            res
+            .status(200)
+            .json({status: 200, message: "Success! Post unliked successfully!"});
+        } else {
+            res
+            .status(400)
+            .json({status: 400, data: post_id, message: "Something went wrong! Please try again or contact support for more details."});
+        }
 
     } catch (err) {
         res
@@ -348,6 +559,8 @@ const unlikePost = async (req, res) => {
         .json({status: 500, message: err.message});
     }
 }
+
+//////////////////////////////////////////////////////////
 
 // delete post by id
 const deleteBlogPost = async (req, res) => {
@@ -362,18 +575,39 @@ const deleteBlogPost = async (req, res) => {
         const post_id = req.params.postid;
         const user_id = req.params.userid
 
-        //TODO: verify that postID exists
-        //TODO: verify that the user is authorized to delete blog post
+        //verify that postID exists
 
-        const result = await db.collection("posts").updateOne({_id: user_id}, {"$pull" :{"posts": {_id: post_id}}});
+        const postData = await db.collection("posts").findOne({"posts._id": post_id});
+
+        if(!postData){
+            return res
+            .status(404)
+            .json({status: 404, data: post_id, message: "Error: Post ID does not exist"});
+        }
+
+        //verify that the user is authorized to delete blog post
+
+        const postAuthor = postData.posts.find((post) => post._id === post_id).postAuthorId
+
+        if(postAuthor !== user_id){
+            return res
+            .status(403)
+            .json({status: 403, data: post_id, message: "User is not authorized to delete this post."});
+        }
+
+        await db.collection("posts").updateOne({_id: user_id}, {"$pull" :{"posts": {_id: post_id}}});
 
         client.close();
 
-        //if result.modifiedCount === 1
-        
-        res
-        .status(200)
-        .json({status: 200, message: "Success! Post deleted successfully"});
+        if(result.modifiedCount === 1){
+            res
+            .status(200)
+            .json({status: 200, message: "Success! Post deleted successfully"});
+        } else {
+            res
+            .status(400)
+            .json({status: 400, data: post_id, message: "Something went wrong! Please try again or contact support for more details."});
+        }
 
     } catch (err) {
         res
@@ -381,6 +615,8 @@ const deleteBlogPost = async (req, res) => {
         .json({status: 500, message: err.message});
     }
 }
+
+//////////////////////////////////////////////////////////
 
 // delete comment by id
 const deleteComment = async (req, res) => {
@@ -394,9 +630,40 @@ const deleteComment = async (req, res) => {
     
         const post_id = req.params.postid;
         const comment_id = req.params.commentid;
+        const user_id = req.params.userid;
 
-        //TODO: verify that commentID exists
-        //TODO: verify that the user is authorized to delete comment
+        //verify that post id exists
+
+        const postData = await db.collection("posts").findOne({"posts._id": post_id});
+
+        if(!postData){
+            return res
+            .status(404)
+            .json({status: 404, data: post_id, message: "Error: Post ID does not exist"});
+        }
+
+        //verify that commentID exists
+
+        const commentData = await db.collection("posts").findOne({"posts.comments._id": comment_id});
+
+        if(!commentData){
+            return res
+            .status(404)
+            .json({status: 404, data: comment_id, message: "Error: Comment ID does not exist"});
+        }
+        
+        //verify that the user is authorized to delete comment
+
+        const commentAuthor = commentData.posts.find((post) => post._id === post_id).comments.find((comment) => comment._id === comment_id).author
+
+        console.log(commentAuthor, "comment author");
+        console.log(user_id, "userid");
+
+        if(commentAuthor !== user_id){
+            return res
+            .status(403)
+            .json({status: 403, data: user_id, message: "User is not authorized to delete this comment."});
+        }
 
         const result = await db.collection("posts").updateOne({"posts._id": post_id}, {"$pull" :{"posts.$.comments": {_id: comment_id}}});
 
@@ -404,11 +671,15 @@ const deleteComment = async (req, res) => {
 
         console.log(result);
 
-        //if result.modifiedCount === 1
-        
+        if(result.modifiedCount === 1){
         res
         .status(200)
         .json({status: 200, message: "Success! Comment deleted successfully"});
+        } else {
+            res
+            .status(400)
+            .json({status: 400, data: post_id, message: "Something went wrong! Please try again or contact support for more details."});
+        }
 
     } catch (err) {
         res
@@ -419,7 +690,7 @@ const deleteComment = async (req, res) => {
 
 module.exports = {
     getDummyUsers,
-    getUserById,
+    getDummyUserById,
     getPostsbyUserId,
     getPostsById,
     createNewUser,
@@ -430,5 +701,7 @@ module.exports = {
     likePost,
     unlikePost,
     deleteBlogPost,
-    deleteComment
+    deleteComment,
+    getUsers,
+    getUserById
 }
