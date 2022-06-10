@@ -1,4 +1,5 @@
 const request = require("request-promise");
+const data = require('./promptData');
 require("dotenv").config();
 
 const { APP_ID, MONGO_URI } = process.env;
@@ -194,6 +195,26 @@ const getPostsById = async (req, res) => {
         res
         .status(500)
         .json({status: 500, message: err.message})
+    }
+}
+
+//////////////////////////////////////////////////////////
+
+//GET random journalling prompt
+
+const getPrompt = async (req, res) => {
+    try {
+
+        const randomIndex = Math.floor(Math.random() * 30)
+        const randomPrompt = data.promptData[randomIndex];
+
+        res
+        .status(200)
+        .json({status: 200, data: randomPrompt});
+    } catch (err) {
+        res
+        .status(500)
+        .json({status: 500, message: err.message});
     }
 }
 
@@ -704,5 +725,6 @@ module.exports = {
     deleteBlogPost,
     deleteComment,
     getUsers,
-    getUserById
+    getUserById,
+    getPrompt
 }

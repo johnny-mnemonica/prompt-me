@@ -18,7 +18,8 @@ const {
   deleteBlogPost,
   deleteComment,
   getUsers,
-  getUserById
+  getUserById,
+  getPrompt
 } = require('./handlers');
 
 express()
@@ -47,6 +48,7 @@ express()
 .get("/api/getpost/:id", getPostsById)
 .get("/api/getusers", getUsers)
 .get("/api/getuser/:id", getUserById)
+.get("/api/getprompt", getPrompt)
 .post("/api/createuser", createNewUser)
 .post("/api/createpost", createNewBlogPost)
 .patch("/api/follow", followFriend)
