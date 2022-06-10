@@ -1,7 +1,6 @@
 import styled from 'styled-components'
 import GlobalStyles from './GlobalStyles';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import About from "./components/About";
 import NavBar from './components/NavBar';
 import SplashMain from './components/SplashMain';
 import Homepage from './components/HomePage';
@@ -26,7 +25,6 @@ const App = () => {
         <NavBar/>
         <Routes>
           <Route path="/" element={<SplashMain/>} />
-          <Route path="/about" element={<About/>} /> 
         {isLoading ?
           <>
           <Route path="/home" element={<Loading/>} />

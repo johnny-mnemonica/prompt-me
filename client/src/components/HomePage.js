@@ -1,3 +1,4 @@
+import styled from "styled-components";
 import { useAuth0 } from "@auth0/auth0-react";
 import { Link } from "react-router-dom";
 import { useEffect } from "react";
@@ -33,7 +34,7 @@ const Homepage = () => {
 
     return (
         <>
-            Welcome, {user.given_name}.
+            <Span>Welcome, {user.given_name}.</Span>
             <Link to="/create-post">
                 <button>
                     create new post
@@ -52,5 +53,12 @@ const Homepage = () => {
         </>
     )
 }
+
+const Span = styled.span`
+font-family: var(--font-header);
+font-size: 60px;
+font-weight: 100;
+color: #5370a3;
+`
 
 export default Homepage;
