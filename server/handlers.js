@@ -93,7 +93,7 @@ const getUsers = async (req, res) => {
 
 //////////////////////////////////////////////////////////
 
-//GET user by ID (in database - not using this for demo)
+//GET user by ID (in database - for demo purposes, we will only use this to fetch info about the currently logged in user)
 const getUserById = async (req, res) => {
     try {
         const client = new
@@ -163,6 +163,46 @@ const getPostsbyUserId = async (req, res) => {
 }
 
 //////////////////////////////////////////////////////////
+//GET following by user ID
+
+const getFollowing = async (req, res) => {
+    try {
+        const client = new
+        MongoClient(MONGO_URI, options);
+    
+        await client.connect();
+        
+        const db = client.db("promptme");
+    
+        const _id = req.params.id;
+
+        const data = await db.collection("users").findOne({_id});
+
+        client.close();
+        
+        if(!data){
+            res
+            .status(404)
+            .json({status: 404, message: "Error: User ID does not exist."})
+        } else {
+
+            const usersFollowing = data.following;
+
+            res
+            .status(200)
+            .json({status: 200, data: usersFollowing})
+        }
+    
+    } catch (err) {
+        res
+        .status(500)
+        .json({status: 500, message: err.stack})
+        console.log(err.message);
+    }
+}
+
+//////////////////////////////////////////////////////////
+
 
 // GET posts by id
 const getPostsById = async (req, res) => {
@@ -197,6 +237,81 @@ const getPostsById = async (req, res) => {
         .json({status: 500, message: err.message})
     }
 }
+
+//////////////////////////////////////////////////////////
+
+//GET user's homefeed
+
+const getHomeFeed = async (req, res) => {
+    try {
+        const client = new
+        MongoClient(MONGO_URI, options);
+    
+        await client.connect();
+    
+        const db = client.db("promptme");
+    
+        const _id = req.params.id;
+
+        const userData = await db.collection("users").findOne({_id});
+        const postData = await db.collection("posts").findOne({_id});
+        const allPosts = await db.collection("posts").find().toArray();
+    
+        client.close();
+        
+        if(!userData){
+            return res
+            .status(404)
+            .json({status: 404, data: _id, message: "User ID does not exist"})
+        } 
+        
+        const userPosts = postData.posts;
+        const usersFollowing = userData.following;
+        
+        if(usersFollowing.length > 0){
+
+            // filter posts collection to get only the posts of the users that we're following
+            const filteredUserPosts = allPosts.filter((post) => {
+                return usersFollowing.includes(post._id)
+            })
+
+            // grab our post objects with a nested forEach loop and push them into our postArray
+            let postArray = [];
+            filteredUserPosts.forEach((post) => post.posts.forEach((el)=> postArray.push(el)));
+
+            // combine user's posts with the posts of the people they're following
+            const postFeedArr = postArray.concat(userPosts); 
+            
+            // sort by timestamp
+            const sortedArray = postFeedArr.sort((a,b) => {
+                return new Date(b.timestamp) - new Date(a.timestamp);
+            })
+            
+            return res
+            .status(200)
+            .json({status: 200, data: sortedArray})
+        } else {
+            if(userPosts.length > 0){
+                const sortedArray = userPosts.sort((a,b) => {
+                    return new Date(b.timestamp) - new Date(a.timestamp);
+                })
+                return res
+                .status(200)
+                .json({status: 200, data: sortedArray})
+            } else {
+                return res
+                .status(404)
+                .json({status: 404, data: [], message: "Error: No posts found"})
+            }
+        }
+
+    } catch (err) {
+        res
+        .status(500)
+        .json({status: 500, message: err.message})
+    }
+}
+
 
 //////////////////////////////////////////////////////////
 
@@ -726,5 +841,7 @@ module.exports = {
     deleteComment,
     getUsers,
     getUserById,
-    getPrompt
+    getPrompt,
+    getFollowing,
+    getHomeFeed
 }
