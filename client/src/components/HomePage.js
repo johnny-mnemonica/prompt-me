@@ -3,6 +3,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import PostFeed from "./PostFeed";
+import { motion } from 'framer-motion';
 
 const Homepage = () => {
 
@@ -60,7 +61,12 @@ const Homepage = () => {
             </Link>
             </Container>
             <Container2>
-            <Span>Welcome, {user.given_name}.</Span>
+            <Span
+            initial={{opacity: 0, y: -20}}
+            animate={{opacity: 1, y: 0}}
+            transition={{ duration: 1.5 }}>
+                Welcome, {user.given_name}.
+            </Span>
             <Container3>
             {
                 loading ?
@@ -77,7 +83,7 @@ const Homepage = () => {
     )
 }
 const Container3 = styled.div`
-margin-top: 5%;
+margin-top: 2%;
 margin-left: 1%;
 `
 
@@ -128,7 +134,7 @@ cursor: pointer;
 }
 `
 
-const Span = styled.span`
+const Span = styled(motion.div)`
 font-family: var(--font-header);
 font-size: 60px;
 font-weight: 100;
