@@ -5,6 +5,7 @@ export default createGlobalStyle`
 :root{
     --font-logo: 'Syne', sans-serif;
 	--font-header: 'Roboto', sans-serif;
+	--font-body: 'Roboto Mono', monospace;
 	--color-primary-orange: #ed9a34;
 	/* --font-logo: 'Chonburi', cursive; */
 }

@@ -2,16 +2,19 @@ import styled from "styled-components";
 import { useAuth0 } from "@auth0/auth0-react";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
+import PostFeed from "./PostFeed";
 
 const Homepage = () => {
 
     const {isAuthenticated, isLoading, user} = useAuth0();
     const [postFeed, setPostFeed] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     const getPostFeed = () => {
         fetch(`/api/gethomefeed/${user.sub}`)
         .then(res => res.json())
         .then(data => setPostFeed(data.data))
+        .then(setLoading(false))
     }
 
     console.log(postFeed);
@@ -19,6 +22,7 @@ const Homepage = () => {
     
     useEffect(() => {
         if(isAuthenticated){
+            setLoading(true);
             fetch("/api/createuser", {
                 method: 'POST',
                 headers: {
@@ -37,7 +41,7 @@ const Homepage = () => {
 
     return (
         <>
-            <Span>Welcome, {user.given_name}.</Span>
+        <Wrapper>
             <Container>
             <Link to="/create-post">
                 <Button>
@@ -55,9 +59,45 @@ const Homepage = () => {
                 </Button>
             </Link>
             </Container>
+            <Container2>
+            <Span>Welcome, {user.given_name}.</Span>
+            <Container3>
+            {
+                loading ?
+                <Span2>Loading...</Span2>
+                : postFeed.length === 0 ?
+                <Span2>there's nothing to see here (yet)! create a new post or follow a friend to get started.</Span2>
+                :
+                <PostFeed data={postFeed} />
+            }
+            </Container3>
+            </Container2>
+            </Wrapper>
         </>
     )
 }
+const Container3 = styled.div`
+margin-top: 5%;
+margin-left: 1%;
+`
+
+const Container2 = styled.div`
+display: flex;
+flex-direction: column;
+margin-left: 5%;
+`
+
+const Wrapper = styled.div`
+display: flex;
+flex-direction: row;
+margin-top: 5%;
+`
+
+const Span2 = styled.span`
+font-family: var(--font-body);
+color: gray;
+font-size: 14px;
+`
 
 const Container = styled.div`
 display: flex;
