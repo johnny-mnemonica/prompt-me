@@ -1,12 +1,17 @@
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
+import Post from './Post'
 
 const PostFeed = ({data}) => {
+    
 
 
     return (
         <>
-        postfeed
+        { data.map((post) => {
+            return <Post postData={post}/>
+        })
+        }
         </>
 
     )

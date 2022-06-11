@@ -92,14 +92,14 @@ const Container2 = styled.div`
 display: flex;
 flex-direction: column;
 margin-left: 5%;
-width: 100%;
+max-width: 75%;
 `
 
 const Wrapper = styled.div`
 display: flex;
 flex-direction: row;
 margin-top: 5%;
-width: 100%;
+/* width: 100%; */
 `
 
 const Span2 = styled.span`
@@ -120,7 +120,7 @@ font-size: 14px;
 width: 200px;
 height: 50px;
 color: var(--color-primary-orange);
-background: rgba(255, 255, 255, 0.45);
+background: var(--color-bg-element);
 border: none;
 margin-bottom: 5px;
 text-align: right;
@@ -141,7 +141,7 @@ const Span = styled(motion.div)`
 font-family: var(--font-header);
 font-size: 60px;
 font-weight: 100;
-color: #5370a3;
+color: var(--color-primary-blue);
 `
 
 export default Homepage;

@@ -59,7 +59,7 @@ const App = () => {
 }
 
 const Container = styled.div`
-width: 100vw;
+max-width: 100vw;
 min-height: 100vh;
 background: rgb(227,196,159);
 background: radial-gradient(circle, rgba(227,196,159,1) 8%, rgba(186,241,244,1) 65%, rgba(252,210,70,1) 100%);

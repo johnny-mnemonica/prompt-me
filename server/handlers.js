@@ -450,7 +450,7 @@ const followFriend = async (req, res) => {
         } else {
             res
             .status(400)
-            .json({status: 400, data: comment, message: "Something went wrong! Please try again or contact support for more details."});
+            .json({status: 400, message: "Something went wrong! Please try again or contact support for more details."});
         }
 
     } catch (err) {
@@ -508,7 +508,7 @@ const unfollowFriend = async (req, res) => {
         } else {
             res
             .status(400)
-            .json({status: 400, data: comment, message: "Something went wrong! Please try again or contact support for more details."});
+            .json({status: 400, message: "Something went wrong! Please try again or contact support for more details."});
         }
 
     } catch (err) {

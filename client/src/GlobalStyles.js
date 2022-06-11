@@ -7,6 +7,8 @@ export default createGlobalStyle`
 	--font-header: 'Roboto', sans-serif;
 	--font-body: 'Roboto Mono', monospace;
 	--color-primary-orange: #ed9a34;
+	--color-primary-blue: #5370a3;
+	--color-bg-element: rgba(255, 255, 255, 0.45);
 	/* --font-logo: 'Chonburi', cursive; */
 }
 
@@ -62,6 +64,12 @@ table {
 //my own globalstyles
 
 span{
+	font-family: 'Roboto Mono', monospace;
+	color: gray;
+	font-size: 14px;
+}
+
+p{
 	font-family: 'Roboto Mono', monospace;
 	color: gray;
 	font-size: 14px;

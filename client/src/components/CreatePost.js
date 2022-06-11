@@ -91,6 +91,8 @@ const Form = styled.form`
 display: flex;
 flex-direction: column;
 width: 100%;
+justify-content: space-between;
+height: inherit;
 `
 
 const Content = styled.div`
