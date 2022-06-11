@@ -65,7 +65,7 @@ const Homepage = () => {
             initial={{opacity: 0, y: -20}}
             animate={{opacity: 1, y: 0}}
             transition={{ duration: 1.5 }}>
-                Welcome, {user.given_name}.
+                Welcome, {user.nickname}.
             </Span>
             <Container3>
             {
@@ -85,18 +85,21 @@ const Homepage = () => {
 const Container3 = styled.div`
 margin-top: 2%;
 margin-left: 1%;
+width: 100%;
 `
 
 const Container2 = styled.div`
 display: flex;
 flex-direction: column;
 margin-left: 5%;
+width: 100%;
 `
 
 const Wrapper = styled.div`
 display: flex;
 flex-direction: row;
 margin-top: 5%;
+width: 100%;
 `
 
 const Span2 = styled.span`

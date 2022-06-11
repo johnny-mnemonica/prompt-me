@@ -58,4 +58,33 @@ table {
 	border-collapse: collapse;
 	border-spacing: 0;
 }
+
+//my own globalstyles
+
+span{
+	font-family: 'Roboto Mono', monospace;
+	color: gray;
+	font-size: 14px;
+}
+
+button{
+	font-family: var(--font-header);
+	font-weight: 400;
+	font-size: 14px;
+	width: 100px;
+	height: 37.5px;
+	border: 1px solid var(--color-primary-orange);
+	color: var(--color-primary-orange);
+	background: none;
+	transition: background-color 500ms;
+	transition-timing-function: ease;
+	border-radius: 16px;
+	cursor: pointer;
+
+&:hover {
+    background-color: rgba(252,210,70,.35);
+    transition: background-color 500ms;
+    transition-timing-function: ease;
+}
+}
 `;
