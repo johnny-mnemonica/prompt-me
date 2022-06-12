@@ -111,6 +111,7 @@ font-size: 14px;
 const Container = styled.div`
 display: flex;
 flex-direction: column;
+margin-top: 50px;
 `
 
 const Button = styled.button`

@@ -58,7 +58,7 @@ const CreatePost = () => {
             </span>
         {
             prompt &&
-            <span>{prompt}</span>
+            <Span>{prompt}</Span>
         }
             <TextArea type="text" placeholder="your blog post here!" onChange={(e) => setBody(e.target.value)} required/>
             <button type="submit">submit</button>
@@ -70,6 +70,10 @@ const CreatePost = () => {
     )
 
 }
+
+const Span = styled.span`
+font-style: italic;
+`
 
 const Button = styled.button`
 align-self: flex-start;

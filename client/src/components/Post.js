@@ -3,11 +3,14 @@ import moment from 'moment';
 import {useState, useEffect} from 'react';
 import { useAuth0 } from "@auth0/auth0-react";
 import { v4 as uuidv4 } from 'uuid';
+import {Link} from 'react-router-dom'
+import { FiTrash } from "react-icons/fi";
+import { Confirm } from 'react-st-modal';
+
 
 import Comment from "./Comment";
 
 const Post = ({postData}) => {
-
     
     const date = moment(postData.timestamp).format("MMM Do YYYY, h:mm A");
     
@@ -19,7 +22,26 @@ const Post = ({postData}) => {
     const {user} = useAuth0();
     
     useEffect(() => {}, [addedNewComment])
-    
+
+    const deleteHandler = async () => {
+        console.log("my function is firing!");
+        await fetch(`/api/${user.sub}/deletepost/${postData._id}`, {
+            method: 'DELETE'
+        })
+        window.location.reload();
+}
+
+    const confirmHandler = async () => {
+        const isConfirm = await Confirm(
+            'You cannot undo this action.',
+            'Are you sure you want to delete this post?'
+        );
+        
+        if (isConfirm) {
+            deleteHandler();
+        }
+        };
+
     const submitHandler = (e) => {
         const timestamp = new Date().toISOString();
         const _id = uuidv4();
@@ -47,41 +69,99 @@ const Post = ({postData}) => {
     return (
         <Container>
             <Content>
-                <Span>{postData.postAuthor}</Span>
+                <>
+                <Div2>
+                    <div>
+                {
+                    user.sub === postData.postAuthorId ?
+                    <Link to={`/profile/${user.sub}`}>{postData.postAuthor}</Link>
+                    :
+                    <Span>{postData.postAuthor}</Span>
+                }
+
+
                 <Span2> • {date}</Span2>
+                </div>
+                {
+                    user.sub === postData.postAuthorId &&
+                    // <Div>
+                    <Delete onClick={confirmHandler}><FiTrash /></Delete>
+                    // </Div>
+                }
+                </Div2>
                 <Title>{postData.postTitle}</Title>
                 <P>mood: {postData.mood}</P>
                 <P2>{postData.body}</P2>
                 {postData.comments.length > 0 &&
                     <>
                     <CommentTitle>Comments</CommentTitle>
-                    <button onClick={() => setShowComments(true)}>show comments {">>"} </button>
+                    { !showComments &&
+                    <>
+                    <A onClick={() => setShowComments(true)}>show comments {">>"} </A>
+                    </>
+                    }
                     </>
                 }
 
                 {showComments &&
-                        postData.comments.map((comment) => {
-                            return <Comment data={comment}/>
-                        })
+                    <A onClick={() => setShowComments(false)}>
+                        {"<<"} hide comments</A>
                 }
 
                 {showComments &&
-                        <button onClick={() => setShowComments(false)}>hide comments</button>
-                }   
-
-                <button onClick={() => setAddComment(true)}>add comment</button>
-                {
-                    addComment &&
-                    <form onSubmit={e => submitHandler(e)} >
-                    <textarea type="text" placeholder="your comment here" onChange={(e) => setComment(e.target.value)}/>
-                    <button type="submit">submit</button>
-                    </form>
+                    postData.comments.map((comment) => {
+                        return <Comment data={comment}/>
+                    })
                 }
+
+                {showComments &&
+                <>
+                    <CommentTitle>Leave a comment</CommentTitle>
+                    <Form onSubmit={e => submitHandler(e)} >
+                    <Textarea type="text" placeholder="say something nice!" onChange={(e) => setComment(e.target.value)}/>
+                    <button type="submit">submit</button>
+                    </Form>
+                </>
+                }
+
+                </>
                 </Content>
         </Container>
     )
 }
 
+const Delete = styled.a`
+font-size: 20px;
+`
+
+const Div2 = styled.div`
+display: flex;
+flex-direction: row;
+width: 100%;
+justify-content: space-between;
+`
+
+const Div = styled.div`
+align-self: flex-end;
+`
+
+const A = styled.a`
+font-size: 12px;
+`
+
+const Textarea = styled.textarea`
+resize: none;
+width: 600px;
+height: 75px;
+margin-bottom: 20px;
+border: 1px solid var(--color-primary-blue);
+`
+
+const Form = styled.form`
+display: flex; 
+flex-direction: column;
+
+`
 const P = styled.p`
 margin-bottom: 5px;
 `
@@ -115,6 +195,8 @@ const Content = styled.div`
 width: 95%;
 margin-top: 15px;
 margin-bottom: 15px;
+display: flex;
+flex-direction: column;
 `
 
 const Container = styled.div`

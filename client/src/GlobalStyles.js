@@ -63,6 +63,13 @@ table {
 
 //my own globalstyles
 
+a{
+	color: var(--color-primary-orange);
+	cursor: pointer;
+	font-family: var(--font-body);
+	font-size: 14px;
+}
+
 span{
 	font-family: 'Roboto Mono', monospace;
 	color: gray;
