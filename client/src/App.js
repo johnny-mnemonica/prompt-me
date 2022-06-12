@@ -6,12 +6,12 @@ import SplashMain from './components/SplashMain';
 import Homepage from './components/HomePage';
 import NotFound from './components/NotFound';
 import { useAuth0 } from "@auth0/auth0-react";
-import Loading from './components/Loading';
 import Unauthorized from './components/Unauthorized';
 import CreatePost from './components/CreatePost';
 import Confirmation from './components/Confirmation';
 import Profile from './components/Profile';
 import Search from './components/Search';
+import LoadingSpinner from './components/LoadingSpinner';
 
 const App = () => {
 
@@ -27,11 +27,11 @@ const App = () => {
           <Route path="/" element={<SplashMain/>} />
         {isLoading ?
           <>
-          <Route path="/home" element={<Loading/>} />
-          <Route path="/create-post" element={<Loading/>} />
-          <Route path="/create-post/success" element={<Loading/>} />
-          <Route path="/profile/:id" element={<Loading/>} />
-          <Route path="/search" element={<Loading/>} />
+          <Route path="/home" element={<LoadingSpinner/>} />
+          <Route path="/create-post" element={<LoadingSpinner/>} />
+          <Route path="/create-post/success" element={<LoadingSpinner/>} />
+          <Route path="/profile/:id" element={<LoadingSpinner/>} />
+          <Route path="/search" element={<LoadingSpinner/>} />
           </>
         : !isAuthenticated ? 
           <>
