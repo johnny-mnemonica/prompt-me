@@ -1,9 +1,7 @@
-import { useAuth0 } from "@auth0/auth0-react";
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 import styled from "styled-components";
+import { useEffect, useState } from "react";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import PostFeed from "./PostFeed";
-import { useNavigate, Link } from "react-router-dom";
 import LoadingSpinner from "./LoadingSpinner";
 
 const Profile = () => {
@@ -30,10 +28,7 @@ const Profile = () => {
         .then(res => res.json())
         .then(data => setProfileData(data.data))
         .then(() => getPostFeed())
-        // .then(setHasLoaded(true))
     }, [id]);
-    
-    // console.log(profileData.imgSrc);
 
     return (
         <>
@@ -114,7 +109,6 @@ border-radius: 50%;
 const Container3 = styled.div`
 display: flex;
 flex-direction: column;
-/* align-self: flex-start; */
 margin-left: 15px;
 align-self: center;
 `
@@ -133,7 +127,6 @@ const Container2 = styled.div`
 display: flex;
 flex-direction: row;
 align-self: flex-start;
-/* margin-left: 70px; */
 margin-left: 10px;
 margin-bottom: 2%;
 `
@@ -144,7 +137,6 @@ display: flex;
 flex-direction: column;
 justify-content: center;
 align-items: center;
-/* padding-left: 70px; */
 `
 
 const Wrapper = styled.div`
@@ -154,7 +146,6 @@ justify-content: center;
 align-items: center;
 width: 100%;
 margin-top: 5%;
-;
 `
 
 export default Profile;

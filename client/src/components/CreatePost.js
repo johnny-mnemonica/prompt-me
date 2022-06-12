@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from "react-router-dom";
+import SyncLoader from "react-spinners/SyncLoader";
 
 const CreatePost = () => {
     const navigate = useNavigate();
@@ -12,16 +13,16 @@ const CreatePost = () => {
     const [body, setBody] = useState(null);
     const [mood, setMood] = useState(null);
     const [prompt, setPrompt] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     const getRandomPrompt = () => {
         fetch('/api/getprompt')
         .then(res => res.json())
         .then(data => setPrompt(data.data))
     }
-
-    console.log(prompt);
     
     const submitHandler = (e) => {
+        setLoading(true);
         const timestamp = new Date().toISOString();
         const _id = uuidv4();
 
@@ -47,12 +48,13 @@ const CreatePost = () => {
     return (
         <>
         <Wrapper>
-                    <Button onClick={(() => navigate(-1))}>{"<< go back"}</Button>
+            <Button onClick={(() => navigate(-1))}>{"<< go back"}</Button>
             <Container>
                 <Content>
-        <Form onSubmit={e => submitHandler(e)}>
-            <input type="text" placeholder="title" onChange={(e) => setPostTitle(e.target.value)} required/>
-            <input type="text" placeholder="how are you feeling?" onChange={(e) => setMood(e.target.value)} required/>
+            <Form onSubmit={e => submitHandler(e)}>
+            <Title>Create a new post</Title>
+            <Input1 type="text" placeholder="title" onChange={(e) => setPostTitle(e.target.value)} required/>
+            <Input2 type="text" placeholder="how are you feeling?" onChange={(e) => setMood(e.target.value)} required/>
             <span>
                 not sure what to write about? click <A onClick={getRandomPrompt}>here</A> to generate a journalling prompt
             </span>
@@ -61,7 +63,13 @@ const CreatePost = () => {
             <Span>{prompt}</Span>
         }
             <TextArea type="text" placeholder="your blog post here!" onChange={(e) => setBody(e.target.value)} required/>
-            <button type="submit">submit</button>
+            <button type="submit">
+                {!loading ?
+                "submit" 
+                :
+                <SyncLoader size={10} color={"#ed9a34"} />
+                }
+            </button>
         </Form>
             </Content>
         </Container>
@@ -71,18 +79,39 @@ const CreatePost = () => {
 
 }
 
+const Input1 = styled.input`
+width: 350px;
+height: 20px;
+/* border-radius: 5px; */
+font-family: var(--font-body);
+border: 1px solid var(--color-primary-blue);
+`
+
+const Input2 = styled(Input1)`
+width: 150px;
+
+`
+
+const Title = styled.p`
+font-family: var(--font-header);
+color: var(--color-primary-blue);
+font-size: 22px;
+/* margin-bottom: 15px; */
+`
+
 const Span = styled.span`
 font-style: italic;
 `
 
 const Button = styled.button`
 align-self: flex-start;
-margin-left: 3.75%;
+margin-left: 4%;
 `
 
 const TextArea = styled.textarea`
 resize: none;
 height: 200px;
+border: 1px solid var(--color-primary-blue);
 `
 
 const A = styled.a`
@@ -105,12 +134,13 @@ height: 100%;
 display: flex;
 flex-direction: column;
 align-items: center;
-padding-top: 20px;
+padding-top: 25px;
+padding-bottom: 25px;
 `
 
 const Container = styled.div`
 width: 92.5%;
-height: 500px;
+height: 475px;
 display: flex;
 flex-direction: column;
 align-items: center;

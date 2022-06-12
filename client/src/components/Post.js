@@ -24,7 +24,6 @@ const Post = ({postData}) => {
     useEffect(() => {}, [addedNewComment])
 
     const deleteHandler = async () => {
-        console.log("my function is firing!");
         await fetch(`/api/${user.sub}/deletepost/${postData._id}`, {
             method: 'DELETE'
         })
@@ -92,6 +91,13 @@ const Post = ({postData}) => {
                 <Title>{postData.postTitle}</Title>
                 <P>mood: {postData.mood}</P>
                 <P2>{postData.body}</P2>
+
+                <CommentTitle>Leave a comment</CommentTitle>
+                    <Form onSubmit={e => submitHandler(e)} >
+                    <Textarea type="text" placeholder="say something nice!" onChange={(e) => setComment(e.target.value)}/>
+                    <button type="submit">submit</button>
+                    </Form>
+                    
                 {postData.comments.length > 0 &&
                     <>
                     <CommentTitle>Comments</CommentTitle>
@@ -114,7 +120,7 @@ const Post = ({postData}) => {
                     })
                 }
 
-                {showComments &&
+                {/* {showComments &&
                 <>
                     <CommentTitle>Leave a comment</CommentTitle>
                     <Form onSubmit={e => submitHandler(e)} >
@@ -122,7 +128,7 @@ const Post = ({postData}) => {
                     <button type="submit">submit</button>
                     </Form>
                 </>
-                }
+                } */}
 
                 </>
                 </Content>
