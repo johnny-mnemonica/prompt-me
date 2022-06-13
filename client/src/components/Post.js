@@ -97,7 +97,7 @@ const Post = ({postData}) => {
                     <Textarea type="text" placeholder="say something nice!" onChange={(e) => setComment(e.target.value)}/>
                     <button type="submit">submit</button>
                     </Form>
-                    
+
                 {postData.comments.length > 0 &&
                     <>
                     <CommentTitle>Comments</CommentTitle>
@@ -116,7 +116,7 @@ const Post = ({postData}) => {
 
                 {showComments &&
                     postData.comments.map((comment) => {
-                        return <Comment data={comment}/>
+                        return <Comment data={comment} postData={postData}/>
                     })
                 }
 

@@ -5,11 +5,30 @@ import { Link } from "react-router-dom";
 import { FiTrash } from "react-icons/fi";
 import { Confirm } from 'react-st-modal';
 
-const Comment = ({data}) => {
+const Comment = ({data, postData}) => {
 
     const {user} = useAuth0();
 
     const date = moment(data.timestamp).format("MMM Do YYYY, h:mm A");
+
+    const deleteHandler = async () => {
+        console.log("my funtion is firing!");
+        await fetch(`/api/${user.sub}/${postData._id}/deletecomment/${data._id}`, {
+            method: 'DELETE'
+        })
+        // window.location.reload();
+}
+
+    const confirmHandler = async () => {
+        const isConfirm = await Confirm(
+            'You cannot undo this action.',
+            'Are you sure you want to delete this comment?'
+        );
+        
+        if (isConfirm) {
+            deleteHandler();
+        }
+    };
 
     return (
         <>
@@ -22,12 +41,23 @@ const Comment = ({data}) => {
             <span>{data.authorName}</span>
         }
         <Span2> • {date}</Span2>
+        {
+                    user.sub === data.author &&
+                    // <Div>
+                    <Delete onClick={confirmHandler}><FiTrash /></Delete>
+                    // </Div>
+                }
         </Div>
         <span>{data.body}</span>
         </Wrapper>
         </>
     )
 }
+
+const Delete = styled.a`
+font-size: 20px;
+float: right;
+`
 
 const Div = styled.div`
 margin-bottom: 5px;

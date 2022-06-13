@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useNavigate } from "react-router-dom";
+import LoadingSpinner from './LoadingSpinner';
 
 const SplashMain = () => {
 
@@ -14,9 +15,7 @@ const SplashMain = () => {
     return (
         <>
         {isLoading ?
-        <div>
-            Loading...
-        </div>
+        <LoadingSpinner/>
         :       
         // <>
         <Span>welcome to prompt.me</Span>
