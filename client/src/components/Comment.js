@@ -7,14 +7,14 @@ import { Confirm } from 'react-st-modal';
 import {useEffect} from 'react';
 
 
-const Comment = ({data, postData, setAddedNewComment}) => {
+const Comment = ({data, postData, setAddedNewComment, setCommentLoading}) => {
 
     const {user} = useAuth0();
 
     const date = moment(data.timestamp).format("MMM Do YYYY, h:mm A");
 
     const deleteHandler = async () => {
-        console.log("my funtion is firing!");
+        setCommentLoading(true);
         await fetch(`/api/${user.sub}/${postData._id}/deletecomment/${data._id}`, {
             method: 'DELETE'
         })

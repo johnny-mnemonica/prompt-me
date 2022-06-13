@@ -129,7 +129,7 @@ const Post = ({postData}) => {
                     </>
                 }
 
-                {showComments &&
+                {showComments && commentData?.length > 0 &&
                     <A onClick={() => setShowComments(false)}>
                         {"<<"} hide comments</A>
                 }
@@ -137,7 +137,8 @@ const Post = ({postData}) => {
                 {showComments &&
                 
                     commentData?.map((comment) => {
-                        return <Comment data={comment} postData={postData} setAddedNewComment={setAddedNewComment} />
+                        return <Comment data={comment} postData={postData} setAddedNewComment={setAddedNewComment}
+                        setCommentLoading={setCommentLoading} />
                     })
                 }
                 </>
