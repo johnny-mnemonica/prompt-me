@@ -20,17 +20,25 @@ const Post = ({postData}) => {
     const [addedNewComment, setAddedNewComment] = useState(false);
     const [loading, setLoading] = useState(false);
     const [commentData, setCommentData] = useState([]);
-    const [commentLoading, setCommentLoading] = useState(true);
+    const [commentLoading, setCommentLoading] = useState(false);
     
     const {user} = useAuth0();
+
+    const getCommentHandler = () => {
+        if(postData){
+            setCommentLoading(true);
+            fetch(`/api/getcomments/${postData._id}`)
+            .then(res => res.json())
+            .then(data => setCommentData(data.data))
+            .then(res => {if(commentData){setCommentLoading(false)}})
+            .then(setLoading(false))
+        }
+
+    }
     
     useEffect(() => {
         setAddedNewComment(false);
-        fetch(`api/getcomments/${postData._id}`)
-        .then(res => res.json())
-        .then(data => setCommentData(data.data))
-        .then(res => {if(commentData){setCommentLoading(false)}})
-        .then(setLoading(false))
+        getCommentHandler();
     }, [addedNewComment])
 
     const deleteHandler = async () => {

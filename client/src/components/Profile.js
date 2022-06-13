@@ -15,8 +15,6 @@ const Profile = () => {
     const [pageLoading, setPageLoading] = useState(true);
     const [loading, setLoading] = useState(false);
 
-
-
     const getPostFeed = () => {
         setLoading(true);
         fetch(`/api/getposts/${id}`)
