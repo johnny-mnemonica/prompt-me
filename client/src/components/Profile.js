@@ -49,10 +49,10 @@ const Profile = () => {
             </Container3>
             </Container2>
                 <Container4>
-                <Title2>Posts</Title2>
+                <Title2>Blog posts</Title2>
                 {
                     postData.length === 0 ?
-                        <span>You haven't posted anything yet! <Link to="/create-post">Click here</Link> to create a new post.</span>
+                        <Span>You haven't posted anything yet! <Link to="/create-post">Click here</Link> to create a new post.</Span>
                         :
                         <PostFeed data={postData}/>
                     }
@@ -66,6 +66,10 @@ const Profile = () => {
         </>
     )
 }
+
+const Span = styled.span`
+margin-left: 5px;
+`
 
 const Content = styled.div`
 display: flex;
@@ -119,8 +123,11 @@ color: var(--color-primary-blue);
 font-size: 22px;
 `
 
-const Title2 = styled(Title)`
+const Title2 = styled.p`
 margin-bottom: 15px;
+font-family: var(--font-body);
+font-size: 22px;
+margin-left: 5px;
 `
 
 const Container2 = styled.div`

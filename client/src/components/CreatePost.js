@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from "react-router-dom";
-import SyncLoader from "react-spinners/SyncLoader";
+import PulseLoader from "react-spinners/PulseLoader";
 
 const CreatePost = () => {
     const navigate = useNavigate();
@@ -67,7 +67,7 @@ const CreatePost = () => {
                 {!loading ?
                 "submit" 
                 :
-                <SyncLoader size={10} color={"#ed9a34"} />
+                <PulseLoader size={8} color={"#ed9a34"} />
                 }
             </button>
         </Form>
@@ -140,7 +140,7 @@ padding-bottom: 25px;
 
 const Container = styled.div`
 width: 92.5%;
-height: 475px;
+height: 460px;
 display: flex;
 flex-direction: column;
 align-items: center;
