@@ -4,11 +4,14 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { Link } from "react-router-dom";
 import { FiTrash } from "react-icons/fi";
 import { Confirm } from 'react-st-modal';
+import {useEffect} from 'react';
 
 
 const Comment = ({data, postData}) => {
 
     const {user} = useAuth0();
+
+    useEffect(() => {console.log(data.body, "comment component")}, []);
 
     const date = moment(data.timestamp).format("MMM Do YYYY, h:mm A");
 

@@ -10,29 +10,35 @@ const Profile = () => {
 
     const {id} = useParams();
 
-    const [profileData, setProfileData] = useState(null);
+    const [profileData, setProfileData] = useState({});
     const [postData, setPostData] = useState([]);
+    const [pageLoading, setPageLoading] = useState(true);
     const [loading, setLoading] = useState(false);
 
 
+
     const getPostFeed = () => {
+        setLoading(true);
         fetch(`/api/getposts/${id}`)
         .then(res => res.json())
         .then(data => setPostData(data.data))
-        .then(setLoading(false))
+        .then(res => {if(postData){setLoading(false)}})
     }
 
     useEffect(() => {
-        setLoading(true);
+        // setPageLoading(true);
         fetch(`/api/getuser/${id}`)
         .then(res => res.json())
         .then(data => setProfileData(data.data))
+        .then(res => {if(profileData){setPageLoading(false)}})
         .then(() => getPostFeed())
     }, [id]);
 
+    console.log(profileData);
+
     return (
         <>
-        { loading ?
+        { pageLoading ?
             <LoadingSpinner/>
         :
         <>
@@ -50,8 +56,10 @@ const Profile = () => {
             </Container2>
                 <Container4>
                 <Title2>Blog posts</Title2>
-                {
-                    postData.length === 0 ?
+                {   
+                    loading ?
+                        <Span>Loading...</Span>
+                    : postData.length === 0 ?
                         <Span>You haven't posted anything yet! <Link to="/create-post">Click here</Link> to create a new post.</Span>
                         :
                         <PostFeed data={postData}/>

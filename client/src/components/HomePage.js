@@ -9,21 +9,21 @@ const Homepage = () => {
 
     const {isAuthenticated, isLoading, user} = useAuth0();
     const [postFeed, setPostFeed] = useState([]);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     const getPostFeed = () => {
         fetch(`/api/gethomefeed/${user.sub}`)
         .then(res => res.json())
         .then(data => setPostFeed(data.data))
-        .then(setLoading(false))
+        .then(res => {if(postFeed){setLoading(false)}})
     }
 
     console.log(postFeed);
 
     
     useEffect(() => {
+        // setLoading(true);
         if(isAuthenticated){
-            setLoading(true);
             fetch("/api/createuser", {
                 method: 'POST',
                 headers: {
@@ -36,8 +36,10 @@ const Homepage = () => {
                 .catch((err) => {
                     console.log(err);
                 })
+                
         }
     }, [])
+
 
 
     return (
@@ -92,7 +94,7 @@ const Container2 = styled.div`
 display: flex;
 flex-direction: column;
 margin-left: 5%;
-max-width: 75%;
+width: 75%;
 `
 
 const Wrapper = styled.div`

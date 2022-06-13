@@ -23,7 +23,7 @@ const Post = ({postData}) => {
     
     const {user} = useAuth0();
     
-    useEffect(() => {}, [addedNewComment])
+    useEffect(() => {console.log(comment, "post component")}, [comment])
 
     const deleteHandler = async () => {
         await fetch(`/api/${user.sub}/deletepost/${postData._id}`, {
@@ -59,6 +59,7 @@ const Post = ({postData}) => {
             body: JSON.stringify({_id, author: user.sub, authorName: user.nickname, timestamp, body: comment})
             })
             .then((res) => res.json())
+            .then(console.log(comment))
             .then(() => setLoading(false))
             .then(() => setAddedNewComment(true))
             .catch((err) => {
@@ -95,7 +96,7 @@ const Post = ({postData}) => {
                 <P2>{postData.body}</P2>
 
                 <CommentTitle>Leave a comment</CommentTitle>
-                    <Form onSubmit={e => submitHandler(e)} >
+                    <Form onSubmit={submitHandler} >
                     <Textarea type="text" placeholder="say something nice!" onChange={(e) => setComment(e.target.value)}/>
                     <button type="submit">
                     {!loading ?
@@ -123,6 +124,7 @@ const Post = ({postData}) => {
                 }
 
                 {showComments &&
+                
                     postData.comments.map((comment) => {
                         return <Comment data={comment} postData={postData}/>
                     })

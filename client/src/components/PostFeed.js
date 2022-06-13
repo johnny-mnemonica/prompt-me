@@ -4,7 +4,7 @@ import Post from './Post'
 
 const PostFeed = ({data}) => {
     
-
+    // useEffect(() => {}, []);
 
     return (
         <>
