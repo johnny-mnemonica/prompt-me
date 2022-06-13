@@ -16,14 +16,22 @@ const Post = ({postData}) => {
     const date = moment(postData.timestamp).format("MMM Do YYYY, h:mm A");
     
     const [comment, setComment] = useState(null);
-    const [addComment, setAddComment] = useState(false);
     const [showComments, setShowComments] = useState(false);
     const [addedNewComment, setAddedNewComment] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [commentData, setCommentData] = useState([]);
+    const [commentLoading, setCommentLoading] = useState(true);
     
     const {user} = useAuth0();
     
-    useEffect(() => {console.log(comment, "post component")}, [comment])
+    useEffect(() => {
+        setAddedNewComment(false);
+        fetch(`api/getcomments/${postData._id}`)
+        .then(res => res.json())
+        .then(data => setCommentData(data.data))
+        .then(res => {if(commentData){setCommentLoading(false)}})
+        .then(setLoading(false))
+    }, [addedNewComment])
 
     const deleteHandler = async () => {
         await fetch(`/api/${user.sub}/deletepost/${postData._id}`, {
@@ -58,9 +66,8 @@ const Post = ({postData}) => {
             },
             body: JSON.stringify({_id, author: user.sub, authorName: user.nickname, timestamp, body: comment})
             })
-            .then((res) => res.json())
-            .then(console.log(comment))
-            .then(() => setLoading(false))
+            .then(res => res.json())
+            .then(data => console.log(data))
             .then(() => setAddedNewComment(true))
             .catch((err) => {
                 console.log(err);
@@ -106,8 +113,37 @@ const Post = ({postData}) => {
                     }
                     </button>
                     </Form>
+                    {
+                    commentLoading ?
+                    <P3>Loading comments...</P3>
+                    :
+                    <>
+                    {commentData?.length > 0 &&
+                    <>
+                    <CommentTitle>Comments</CommentTitle>
+                    { !showComments &&
+                    <>
+                    <A onClick={() => setShowComments(true)}>show comments {">>"} </A>
+                    </>
+                    }
+                    </>
+                }
 
-                {postData.comments.length > 0 &&
+                {showComments &&
+                    <A onClick={() => setShowComments(false)}>
+                        {"<<"} hide comments</A>
+                }
+
+                {showComments &&
+                
+                    commentData?.map((comment) => {
+                        return <Comment data={comment} postData={postData} setAddedNewComment={setAddedNewComment} />
+                    })
+                }
+                </>
+            }
+
+                {/* {postData.comments.length > 0 &&
                     <>
                     <CommentTitle>Comments</CommentTitle>
                     { !showComments &&
@@ -128,18 +164,7 @@ const Post = ({postData}) => {
                     postData.comments.map((comment) => {
                         return <Comment data={comment} postData={postData}/>
                     })
-                }
-
-                {/* {showComments &&
-                <>
-                    <CommentTitle>Leave a comment</CommentTitle>
-                    <Form onSubmit={e => submitHandler(e)} >
-                    <Textarea type="text" placeholder="say something nice!" onChange={(e) => setComment(e.target.value)}/>
-                    <button type="submit">submit</button>
-                    </Form>
-                </>
                 } */}
-
                 </>
                 </Content>
         </Container>
@@ -184,6 +209,9 @@ margin-bottom: 5px;
 
 const P2 = styled(P)`
 margin-top: 15px;
+`
+const P3 = styled(P2)`
+margin-top: 25px;
 `
 
 const Span = styled.span`

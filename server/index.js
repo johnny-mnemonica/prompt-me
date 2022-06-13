@@ -21,7 +21,8 @@ const {
   getUserById,
   getPrompt,
   getFollowing,
-  getHomeFeed
+  getHomeFeed,
+  getCommentsByPostsId
 } = require('./handlers');
 
 express()
@@ -53,6 +54,7 @@ express()
 .get("/api/getfollowing/:id", getFollowing)
 .get("/api/getprompt", getPrompt)
 .get("/api/gethomefeed/:id", getHomeFeed)
+.get("/api/getcomments/:id", getCommentsByPostsId)
 .post("/api/createuser", createNewUser)
 .post("/api/createpost", createNewBlogPost)
 .patch("/api/follow", followFriend)

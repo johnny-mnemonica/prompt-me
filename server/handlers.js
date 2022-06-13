@@ -240,7 +240,42 @@ const getPostsById = async (req, res) => {
         .json({status: 500, message: err.message})
     }
 }
+//////////////////////////////////////////////////////////
 
+//GET coments by post ID
+const getCommentsByPostsId = async (req, res) => {
+    try {
+        const client = new
+        MongoClient(MONGO_URI, options);
+    
+        await client.connect();
+    
+        const db = client.db("promptme");
+    
+        const postId = req.params.id;
+
+        const data = await db.collection("posts").findOne({"posts._id": postId});
+
+        client.close();
+
+        if(!data){
+            res
+            .status(404)
+            .json({status: 404, data: postId, message: "Post ID does not exist"})
+        } else {
+            const post = data.posts.find((blogPost) => blogPost._id === postId);
+            const result = post.comments;
+            res
+            .status(200)
+            .json({status: 200, data: result})
+        }
+    
+    } catch (err) {
+        res
+        .status(500)
+        .json({status: 500, message: err.message})
+    }
+}
 //////////////////////////////////////////////////////////
 
 //GET user's homefeed
@@ -548,14 +583,17 @@ const addComment = async (req, res) => {
 
         const result = await db.collection("posts").updateOne({"posts._id": post_id}, {"$push" :{"posts.$.comments": comment}});
 
-        console.log(result);
+        const newPostData = await db.collection("posts").findOne({"posts._id": post_id});
 
         client.close();
+
+        const post = newPostData.posts.find((blogPost) => blogPost._id === post_id);
+        const data = post.comments;
 
         if(result.modifiedCount === 1){
             res
             .status(200)
-            .json({status: 200, message: "Success! Comment created successfully"});
+            .json({status: 200, data: data, message: "Success! Comment created successfully"});
         } else {
             res
             .status(400)
@@ -846,5 +884,6 @@ module.exports = {
     getUserById,
     getPrompt,
     getFollowing,
-    getHomeFeed
+    getHomeFeed,
+    getCommentsByPostsId
 }

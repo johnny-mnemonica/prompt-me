@@ -7,11 +7,9 @@ import { Confirm } from 'react-st-modal';
 import {useEffect} from 'react';
 
 
-const Comment = ({data, postData}) => {
+const Comment = ({data, postData, setAddedNewComment}) => {
 
     const {user} = useAuth0();
-
-    useEffect(() => {console.log(data.body, "comment component")}, []);
 
     const date = moment(data.timestamp).format("MMM Do YYYY, h:mm A");
 
@@ -21,6 +19,7 @@ const Comment = ({data, postData}) => {
             method: 'DELETE'
         })
         // window.location.reload();
+        setAddedNewComment(true);
 }
 
     const confirmHandler = async () => {
@@ -34,6 +33,8 @@ const Comment = ({data, postData}) => {
         }
     };
 
+    console.log(postData, "postdata");
+
     return (
         <>
         <Wrapper>
@@ -46,11 +47,9 @@ const Comment = ({data, postData}) => {
         }
         <Span2> • {date}</Span2>
         {
-                    user.sub === data.author &&
-                    // <Div>
-                    <Delete onClick={confirmHandler}><FiTrash /></Delete>
-                    // </Div>
-                }
+            user.sub === data.author &&
+            <Delete onClick={confirmHandler}><FiTrash /></Delete>
+        }
         </Div>
         <span>{data.body}</span>
         </Wrapper>
