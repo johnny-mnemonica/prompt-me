@@ -141,18 +141,21 @@ const getPostsbyUserId = async (req, res) => {
     
         const _id = req.params.id;
         const data = await db.collection("posts").findOne({_id});
-    
+        
         client.close();
+
+        const sortedArray = data.posts.sort((a,b) => {
+            return new Date(b.timestamp) - new Date(a.timestamp);
+        })
     
         if(!data){
             res
             .status(404)
             .json({status: 404, data: _id, message: "User ID does not exist"})
         } else {
-            const result = data.posts;
             res
             .status(200)
-            .json({status: 200, data: result})
+            .json({status: 200, data: sortedArray})
         }
     
     } catch (err) {

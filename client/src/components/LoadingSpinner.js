@@ -165,7 +165,7 @@ const LoadingSpinner = () => {
 
 const Wrapper = styled.div`
 min-width: 100vw;
-min-height: 100vh;
+min-height: calc(100vh - 50px);
 display: flex;
 justify-content: center;
 align-items: center;
