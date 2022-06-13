@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import {Link} from 'react-router-dom'
 import { FiTrash } from "react-icons/fi";
 import { Confirm } from 'react-st-modal';
+import PulseLoader from "react-spinners/PulseLoader";
 
 
 import Comment from "./Comment";
@@ -18,6 +19,7 @@ const Post = ({postData}) => {
     const [addComment, setAddComment] = useState(false);
     const [showComments, setShowComments] = useState(false);
     const [addedNewComment, setAddedNewComment] = useState(false);
+    const [loading, setLoading] = useState(false);
     
     const {user} = useAuth0();
     
@@ -42,6 +44,7 @@ const Post = ({postData}) => {
         };
 
     const submitHandler = (e) => {
+        setLoading(true);
         const timestamp = new Date().toISOString();
         const _id = uuidv4();
 
@@ -56,7 +59,7 @@ const Post = ({postData}) => {
             body: JSON.stringify({_id, author: user.sub, authorName: user.nickname, timestamp, body: comment})
             })
             .then((res) => res.json())
-            .then((data) => console.log(data.message))
+            .then(() => setLoading(false))
             .then(() => setAddedNewComment(true))
             .catch((err) => {
                 console.log(err);
@@ -83,9 +86,8 @@ const Post = ({postData}) => {
                 </div>
                 {
                     user.sub === postData.postAuthorId &&
-                    // <Div>
                     <Delete onClick={confirmHandler}><FiTrash /></Delete>
-                    // </Div>
+
                 }
                 </Div2>
                 <Title>{postData.postTitle}</Title>
@@ -95,7 +97,13 @@ const Post = ({postData}) => {
                 <CommentTitle>Leave a comment</CommentTitle>
                     <Form onSubmit={e => submitHandler(e)} >
                     <Textarea type="text" placeholder="say something nice!" onChange={(e) => setComment(e.target.value)}/>
-                    <button type="submit">submit</button>
+                    <button type="submit">
+                    {!loading ?
+                        "submit" 
+                    :
+                        <PulseLoader size={8} color={"#ed9a34"} />
+                    }
+                    </button>
                     </Form>
 
                 {postData.comments.length > 0 &&
