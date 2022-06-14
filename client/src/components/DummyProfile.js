@@ -152,7 +152,7 @@ const Profile = () => {
                             { loading ?
                                 <Span>Loading...</Span>
                             : postData.length === 0 ?
-                                <Span>You haven't posted anything yet! <Link to="/create-post">Click here</Link> to create a new post.</Span>
+                                <Span>{profileData.firstName} hasn't posted anything yet!</Span>
                             :
                                 <PostFeed data={postData}/>
                             }

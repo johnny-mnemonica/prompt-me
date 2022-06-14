@@ -2,6 +2,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import styled from 'styled-components';
 import PulseLoader from "react-spinners/PulseLoader";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 
 const UserLookup = ({friend, userFollowing}) => {
@@ -10,16 +11,24 @@ const UserLookup = ({friend, userFollowing}) => {
 
     const [loading, setLoading] = useState(false);
     const [following, setFollowing] = useState(false);
+    const [error, setError] = useState(false)
 
     const followFriendHandler = () => {
-        setLoading(true);
-        fetch("/api/follow", {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-                "Accept": "application/json"
-            },
-            body: JSON.stringify({user_id: user.sub, friend_id: friend.id})
+        if(!following){
+            setLoading(true);
+            fetch("/api/follow", {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    "Accept": "application/json"
+                },
+                body: JSON.stringify({userId: user.sub, friendId: friend.id})
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.status === 400){
+                    setError(true);
+                }
             })
             .then(setLoading(false))
             .then(setFollowing(true))
@@ -27,18 +36,23 @@ const UserLookup = ({friend, userFollowing}) => {
                 console.log(err);
                 window.alert("Oops - something went wrong! Please try again.");
             })
+        }
     }
 
     //TODO: setError 400: you are already following this user!
     console.log(friend);
     return (
         <>
+        {
+            error ?
+                <span>You're already following this user!</span>
+            :   
         <Container>
             <Container2>
                 <Img src={friend.picture} />
-                <span>
+                <Link to={`/dummyprofile/${friend.id}`}>
                     {friend.firstName} {friend.lastName}
-                </span>
+                </Link>
             </Container2>
         {
             userFollowing.includes(friend.id) || following ?
@@ -53,6 +67,7 @@ const UserLookup = ({friend, userFollowing}) => {
             </button>
         }
         </Container>
+        }
         </>
     )
 }
