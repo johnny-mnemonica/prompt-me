@@ -12,6 +12,7 @@ import Confirmation from './components/Confirmation';
 import Profile from './components/Profile';
 import Search from './components/Search';
 import LoadingSpinner from './components/LoadingSpinner';
+import DummyProfile from './components/DummyProfile';
 
 const App = () => {
 
@@ -32,6 +33,7 @@ const App = () => {
           <Route path="/create-post/success" element={<LoadingSpinner/>} />
           <Route path="/profile/:id" element={<LoadingSpinner/>} />
           <Route path="/search" element={<LoadingSpinner/>} />
+          <Route path="/dummyprofile/:id" element={<LoadingSpinner/>} />
           </>
         : !isAuthenticated ? 
           <>
@@ -40,6 +42,7 @@ const App = () => {
           <Route path="/create-post/success" element={<Unauthorized/>}/>
           <Route path="/profile/:id" element={<Unauthorized/>}/>
           <Route path="/search" element={<Unauthorized/>} />
+          <Route path="/dummyprofile/:id" element={<Unauthorized/>} />
           </>
         :
           <>
@@ -48,6 +51,7 @@ const App = () => {
           <Route path="/create-post/success" element={<Confirmation/>}/>
           <Route path="/profile/:id" element={<Profile/>}/>
           <Route path="/search" element={<Search/>} />
+          <Route path="/dummyprofile/:id" element={<DummyProfile/>} />
           </> 
       }
             <Route path="*" element={<NotFound/>}/>

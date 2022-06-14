@@ -10,11 +10,19 @@ const Profile = () => {
 
     const {id} = useParams();
 
+    // state variable containing the user's data
     const [profileData, setProfileData] = useState({});
+
+     // state variable containing the user's posts
     const [postData, setPostData] = useState([]);
+
+     // loading state for the page (set to false after profileData has loaded)
     const [pageLoading, setPageLoading] = useState(true);
+
+     // loading state for user's postfeed (set to false after postData has loaded)
     const [loading, setLoading] = useState(false);
 
+    // function for fetching the post data (called after profileData promise resolves)
     const getPostFeed = () => {
         setLoading(true);
         fetch(`/api/getposts/${id}`)
@@ -23,8 +31,8 @@ const Profile = () => {
         .then(res => {if(postData){setLoading(false)}})
     }
 
+    //useEffect to fetch profile data on mount
     useEffect(() => {
-        // setPageLoading(true);
         fetch(`/api/getuser/${id}`)
         .then(res => res.json())
         .then(data => setProfileData(data.data))
@@ -32,7 +40,7 @@ const Profile = () => {
         .then(() => getPostFeed())
     }, [id]);
 
-    console.log(profileData);
+    console.log(profileData?.imgSrc)
 
     return (
         <>
@@ -42,32 +50,31 @@ const Profile = () => {
         <>
         <Wrapper>
             <Container>
-        <Button onClick={(() => navigate(-1))}>{"<< go back"}</Button>
-            <Container1>
-            <Content>
-            <Container2>
-            <Img src={profileData?.imgSrc} />
-            <Container3>
-            <Title>{profileData?.nickname}</Title>
-            <span>Following: {profileData?.following.length}</span>
-            </Container3>
-            </Container2>
-                <Container4>
-                <Title2>Blog posts</Title2>
-                {   
-                    loading ?
-                        <Span>Loading...</Span>
-                    : postData.length === 0 ?
-                        <Span>You haven't posted anything yet! <Link to="/create-post">Click here</Link> to create a new post.</Span>
-                        :
-                        <PostFeed data={postData}/>
-                    }
-                    </Container4>
+                <Button onClick={(() => navigate(-1))}>{"<< go back"}</Button>
+                <Container1>
+                    <Content>
+                        <Container2>
+                            <Img src={profileData.imgSrc} />
+                            <Container3>
+                                <Title>{profileData?.nickname}</Title>
+                                <span>Following: {profileData?.following.length}</span>
+                            </Container3>
+                        </Container2>
+                        <Container4>
+                            <Title2>Blog posts</Title2>
+                            { loading ?
+                                <Span>Loading...</Span>
+                            : postData.length === 0 ?
+                                <Span>You haven't posted anything yet! <Link to="/create-post">Click here</Link> to create a new post.</Span>
+                            :
+                                <PostFeed data={postData}/>
+                            }
+                        </Container4>
                     </Content>
-                    </Container1>
+                </Container1>
             </Container>
         </Wrapper>
-            </>
+        </>
         }
         </>
     )

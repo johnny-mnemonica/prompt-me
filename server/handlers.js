@@ -452,8 +452,8 @@ const followFriend = async (req, res) => {
     
         const db = client.db("promptme");
     
-        const user_id = req.body.user_id;
-        const friend_id = req.body.friend_id;
+        const user_id = req.body.userId;
+        const friend_id = req.body.friendId;
 
         // validate whether userid exists
         const userData = await db.collection("users").findOne({_id: user_id});
@@ -510,8 +510,11 @@ const unfollowFriend = async (req, res) => {
     
         const db = client.db("promptme");
     
-        const user_id = req.body.userid;
-        const friend_id = req.body.friendid;
+        const user_id = req.body.userId;
+        const friend_id = req.body.friendId;
+
+        console.log(user_id);
+        console.log(friend_id);
         
         // validate whether userid exists
         const userData = await db.collection("users").findOne({_id: user_id});

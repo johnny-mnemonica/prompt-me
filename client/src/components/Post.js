@@ -94,7 +94,7 @@ const Post = ({postData}) => {
                     user.sub === postData.postAuthorId ?
                     <Link to={`/profile/${user.sub}`}>{postData.postAuthor}</Link>
                     :
-                    <Span>{postData.postAuthor}</Span>
+                    <Link to={`/dummyprofile/${postData.postAuthorId}`}>{postData.postAuthor}</Link>
                 }
 
 

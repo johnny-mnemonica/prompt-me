@@ -12,13 +12,11 @@ console.log(clientId);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
     <Auth0Provider
       domain={domain}
       clientId={clientId}
       redirectUri={`${window.location.origin}/home`}>
       <App />
     </Auth0Provider>
-  </React.StrictMode>
 );
 
