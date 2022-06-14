@@ -240,6 +240,8 @@ const Title = styled.p`
 font-family: var(--font-header);
 color: var(--color-primary-blue);
 font-size: 22px;
+margin-left: -2px;
+
 `
 
 const Title2 = styled.p`
@@ -273,7 +275,7 @@ flex-direction: row;
 justify-content: center;
 align-items: center;
 width: 100%;
-margin-top: 5%;
+margin-top: 2%;
 `
 
 export default Profile;
