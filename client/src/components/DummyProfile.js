@@ -1,11 +1,13 @@
 import styled from "styled-components";
 import { useEffect, useState } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import PostFeed from "./PostFeed";
 import LoadingSpinner from "./LoadingSpinner";
 import { useAuth0 } from '@auth0/auth0-react';
 
 const Profile = () => {
+
+    // NOTE: I am using a sepearte "DummyProfile" component for my other users, since I am fetching user information from dummyapi.io. The Profile component is ONLY for the currently logged in user.
 
     const navigate = useNavigate();
 
@@ -25,8 +27,10 @@ const Profile = () => {
      // loading state for user's postfeed (set to false after postData has loaded)
     const [loading, setLoading] = useState(false);
 
+    // state variable containing logged in user's data
     const [currentUserData, setCurrentUserData] = useState(null);
 
+    // state variables passed to following button as props in order to disable them after user clicks
     const [followed, setFollowed] = useState(false);
     const [unfollowed, setUnfollowed] = useState(false);
 
@@ -39,10 +43,8 @@ const Profile = () => {
         .then(res => {if(postData){setLoading(false)}})
     }
 
-    console.log(user.sub)
-
+    // function for fetching the logged in user's data (called after profileData promise resolves)
     const getLoggedInUser = () => {
-        console.log("my function");
         fetch(`/api/getuser/${user.sub}`)
         .then(res => res.json())
         .then(data => setCurrentUserData(data.data))
@@ -55,26 +57,22 @@ const Profile = () => {
         .then(res => res.json())
         .then(data => setProfileData(data.data))
         .then(() => getLoggedInUser())
-        // .then(res => {if(profileData){setPageLoading(false)}})
         .then(() => getPostFeed())
     }, []);
 
+    // unfollow handler
     const unfollowHandler = () => {
         if(!unfollowed) {
-        fetch("/api/unfollow", {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-                "Accept": "application/json"
-            },
-            body: JSON.stringify({userId: user.sub, friendId: id})
+            fetch("/api/unfollow", {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    "Accept": "application/json"
+                },
+                body: JSON.stringify({userId: user.sub, friendId: id})
             })
-            .then(res => res.json())
-            .then(data => console.log(data))
             .then(setFollowed(false))
             .then(setUnfollowed(true))
-            // .then(window.location.reload())
-            // .then(setFollowing(true))
             .catch((err) => {
                 console.log(err);
                 window.alert("Oops - something went wrong! Please try again.");
@@ -82,19 +80,17 @@ const Profile = () => {
         }
     }
 
+    // follow handler
     const followHandler = () => {
-        if(!followed) {
+        if(!followed){
             fetch("/api/follow", {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-                "Accept": "application/json"
-            },
-            body: JSON.stringify({userId: user.sub, friendId: id})
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    "Accept": "application/json"
+                },
+                body: JSON.stringify({userId: user.sub, friendId: id})
             })
-            .then(res => res.json())
-            .then(data => console.log(data))
-            // .then(window.location.reload())
             .then(setFollowed(true))
             .then(setUnfollowed)
             .catch((err) => {
@@ -103,9 +99,6 @@ const Profile = () => {
             })
         }
     }
-
-    console.log(followed, "followed");
-    console.log(unfollowed, "unfollowed");
 
     return (
         <>
@@ -120,31 +113,29 @@ const Profile = () => {
                     <Content>
                         <Container2>
                             <Container5>
-                            <Img src={profileData.picture} />
-                            <Container3>
-                                <Title>{profileData.firstName} {profileData.lastName}</Title>
-                                <span>Following: 0</span>
-                            </Container3>
+                                <Img src={profileData.picture}/>
+                                <Container3>
+                                    <Title>{profileData.firstName} {profileData.lastName}</Title>
+                                    <span>Following: 0</span>
+                                </Container3>
                             </Container5>
-                            {
-                            
-                                currentUserData.following.includes(id) ?
+                            {/* if the logged in user is following this user's profile...  */}
+                            { currentUserData.following.includes(id) ?
                                 <Button2 onClick={unfollowHandler} unfollowed={unfollowed}>
-                                    {unfollowed?
+                                    { unfollowed ?
                                         "unfollowed"
                                     :
                                         "unfollow"
                                     }
                                 </Button2>
-                                :
+                            :
                                 <Button3 onClick={followHandler} followed={followed}>
-                                    {followed?
+                                    { followed ?
                                         "followed"
                                     :
                                         "follow"
                                     }
                                 </Button3>
-                                
                             }
                         </Container2>
                         <Container4>
@@ -171,7 +162,6 @@ const Container5 = styled.div`
 display: flex;
 flex-direction: row;
 align-self: flex-start;
-
 `
 
 const Button3 = styled.button`

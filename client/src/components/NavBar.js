@@ -11,30 +11,28 @@ const NavBar = () => {
 
   return (
     <Wrapper>
-      { 
-      !isAuthenticated ?
+      { !isAuthenticated ?
         <>
         <StyledLink to="/">
-        <Span>
-          prompt.me
-        </Span>
+          <Span>
+            prompt.me
+          </Span>
         </StyledLink>
         <LogInButton/>
         </>
       :
         <>
         <StyledLink to="/home">
-        <Span>
-          prompt.me
-        </Span>
+          <Span>
+            prompt.me
+          </Span>
         </StyledLink>
         <LogOutButton/>
         </>
       }
     </Wrapper>
-  );
+  )
 }
-
 
 const StyledLink = styled(Link)`
 text-decoration: none;

@@ -1,18 +1,18 @@
 import styled from 'styled-components'
 import GlobalStyles from './GlobalStyles';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import NavBar from './components/NavBar';
-import SplashMain from './components/SplashMain';
-import Homepage from './components/HomePage';
-import NotFound from './components/NotFound';
+import NavBar from './NavBar';
+import SplashMain from './SplashMain';
+import Homepage from './HomePage';
+import NotFound from './NotFound';
 import { useAuth0 } from "@auth0/auth0-react";
-import Unauthorized from './components/Unauthorized';
-import CreatePost from './components/CreatePost';
-import Confirmation from './components/Confirmation';
-import Profile from './components/Profile';
-import Search from './components/Search';
-import LoadingSpinner from './components/LoadingSpinner';
-import DummyProfile from './components/DummyProfile';
+import Unauthorized from './Unauthorized';
+import CreatePost from './CreatePost';
+import Confirmation from './Confirmation';
+import Profile from './Profile';
+import Search from './Search';
+import LoadingSpinner from './LoadingSpinner';
+import DummyProfile from './DummyProfile';
 
 const App = () => {
 
@@ -56,11 +56,16 @@ const App = () => {
       }
             <Route path="*" element={<NotFound/>}/>
         </Routes>
+        <Footer/>
     </Router>  
     </Container>
     </>
   );
 }
+
+const Footer = styled.footer`
+height: 50px;
+`
 
 const Container = styled.div`
 max-width: 100vw;

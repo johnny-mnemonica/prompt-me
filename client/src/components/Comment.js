@@ -4,8 +4,6 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { Link } from "react-router-dom";
 import { FiTrash } from "react-icons/fi";
 import { Confirm } from 'react-st-modal';
-import {useEffect} from 'react';
-
 
 const Comment = ({data, postData, setAddedNewComment, setCommentLoading}) => {
 
@@ -13,15 +11,16 @@ const Comment = ({data, postData, setAddedNewComment, setCommentLoading}) => {
 
     const date = moment(data.timestamp).format("MMM Do YYYY, h:mm A");
 
+    // handler for deleting comments
     const deleteHandler = async () => {
         setCommentLoading(true);
         await fetch(`/api/${user.sub}/${postData._id}/deletecomment/${data._id}`, {
             method: 'DELETE'
         })
-        // window.location.reload();
         setAddedNewComment(true);
-}
+    }
 
+    // handler for comfirm delete modal
     const confirmHandler = async () => {
         const isConfirm = await Confirm(
             'You cannot undo this action.',
@@ -33,25 +32,27 @@ const Comment = ({data, postData, setAddedNewComment, setCommentLoading}) => {
         }
     };
 
-    console.log(postData, "postdata");
 
     return (
         <>
         <Wrapper>
-        <Div>
-        {
-            user.sub === data.author ?
-            <Link to={`/profile/${user.sub}`}>{data.authorName}</Link>
-            :
-            <span>{data.authorName}</span>
-        }
-        <Span2> • {date}</Span2>
-        {
-            user.sub === data.author &&
-            <Delete onClick={confirmHandler}><FiTrash /></Delete>
-        }
-        </Div>
-        <span>{data.body}</span>
+            <Div>
+                {/* for the logged in user, link to the Profile component, else link to the DummyProfile component (for demo purposes) */}
+                { user.sub === data.author ?
+                    <Link to={`/profile/${user.sub}`}>{data.authorName}</Link>
+                :
+                    <span>{data.authorName}</span>
+                }
+                <Span2> • {date}</Span2>
+                
+                {/* enables the user to delete their own comments */}
+                { user.sub === data.author &&
+                    <Delete onClick={confirmHandler}>
+                        <FiTrash/>
+                    </Delete>
+                }
+            </Div>
+            <span>{data.body}</span>
         </Wrapper>
         </>
     )
@@ -77,7 +78,6 @@ padding-bottom: 10px;
 display: flex;
 flex-direction: column;
 border-bottom: 1px solid var(--color-primary-blue);
-/* padding-bottom: 5px; */
 `
 
 export default Comment;

@@ -9,18 +9,23 @@ const CreatePost = () => {
     const navigate = useNavigate();
     const {user} = useAuth0();
 
+    // state variables to capture user input
     const [postTitle, setPostTitle] = useState(null);
     const [body, setBody] = useState(null);
     const [mood, setMood] = useState(null);
     const [prompt, setPrompt] = useState(null);
+
+    // laoding state
     const [loading, setLoading] = useState(false);
 
+    // function to get a random journalling prompt
     const getRandomPrompt = () => {
         fetch('/api/getprompt')
         .then(res => res.json())
         .then(data => setPrompt(data.data))
     }
     
+    // blog post submit handler
     const submitHandler = (e) => {
         setLoading(true);
         const timestamp = new Date().toISOString();
@@ -34,15 +39,19 @@ const CreatePost = () => {
                 'Content-Type': 'application/json',
                 "Accept": "application/json"
             },
-            body: JSON.stringify({_id, postAuthorId: user.sub, postAuthor: user.nickname, timestamp, postTitle, body, mood})
+            body: JSON.stringify({
+                _id, 
+                postAuthorId: user.sub, 
+                postAuthor: user.nickname, 
+                timestamp, postTitle, 
+                body, 
+                mood})
             })
-            .then((res) => res.json())
-            .then((data) => console.log(data.message))
-            .then(() => navigate('/create-post/success'))
-            .catch((err) => {
-                console.log(err);
-                window.alert("Oops - something went wrong! Please try again.");
-            })
+        .then(() => navigate('/create-post/success'))
+        .catch((err) => {
+            console.log(err);
+            window.alert("Oops - something went wrong! Please try again.");
+        })
     }
 
     return (
@@ -51,52 +60,47 @@ const CreatePost = () => {
             <Button onClick={(() => navigate(-1))}>{"<< go back"}</Button>
             <Container>
                 <Content>
-            <Form onSubmit={e => submitHandler(e)}>
-            <Title>Create a new post</Title>
-            <Input1 type="text" placeholder="title" onChange={(e) => setPostTitle(e.target.value)} required/>
-            <Input2 type="text" placeholder="how are you feeling?" onChange={(e) => setMood(e.target.value)} required/>
-            <span>
-                not sure what to write about? click <A onClick={getRandomPrompt}>here</A> to generate a journalling prompt
-            </span>
-        {
-            prompt &&
-            <Span>{prompt}</Span>
-        }
-            <TextArea type="text" placeholder="your blog post here!" onChange={(e) => setBody(e.target.value)} required/>
-            <button type="submit">
-                {!loading ?
-                "submit" 
-                :
-                <PulseLoader size={8} color={"#ed9a34"} />
-                }
-            </button>
-        </Form>
-            </Content>
-        </Container>
-    </Wrapper>
-    </>
+                    <Form onSubmit={e => submitHandler(e)}>
+                        <Title>Create a new post</Title>
+                        <Input1 type="text" placeholder="title" onChange={(e) => setPostTitle(e.target.value)} required/>
+                        <Input2 type="text" placeholder="how are you feeling?" onChange={(e) => setMood(e.target.value)} required/>
+                        <span>
+                            not sure what to write about? click <A onClick={getRandomPrompt}>here</A> to generate a journalling prompt
+                        </span>
+                        { prompt &&
+                            <Span>{prompt}</Span>
+                        }
+                        <TextArea type="text" placeholder="your blog post here!" onChange={(e) => setBody(e.target.value)} required/>
+                        <button type="submit">
+                            {!loading ?
+                                "submit" 
+                            :
+                                <PulseLoader size={8} color={"#ed9a34"} />
+                            }
+                        </button>
+                    </Form>
+                </Content>
+            </Container>
+        </Wrapper>
+        </>
     )
-
 }
 
 const Input1 = styled.input`
 width: 350px;
 height: 20px;
-/* border-radius: 5px; */
 font-family: var(--font-body);
 border: 1px solid var(--color-primary-blue);
 `
 
 const Input2 = styled(Input1)`
 width: 150px;
-
 `
 
 const Title = styled.p`
 font-family: var(--font-header);
 color: var(--color-primary-blue);
 font-size: 22px;
-/* margin-bottom: 15px; */
 `
 
 const Span = styled.span`
@@ -146,10 +150,7 @@ flex-direction: column;
 align-items: center;
 background: rgba(255, 255, 255, 0.45);
 border-radius: 16px;
-margin-top:15px;
-/* padding: 20px;x */
-/* margin-top: auto; */
-/* align-self: center; */
+margin-top: 15px;
 `
 
 const Wrapper = styled.div`

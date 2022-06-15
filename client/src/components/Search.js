@@ -9,24 +9,36 @@ const Search = () => {
 
     //NOTE - for develeopment purposes only, I am using the getDummyUserById endpoint to look up users. In a real-world application, we would store all user info in the database, which we could then access using the getUserById endpoint. 
 
+    // state variable for search input
     const [input, setInput] = useState(null);
+
+    // state variable for 404 error message
     const [errMessage, setErrMessage] = useState(null);
+
+    //  state varible to store user's data once it's been fetched
     const [userData, setUserData] = useState([]);
+
+    // loading state while fetch is running
     const [loading, setLoading] = useState(false);
+
+    // state variable to store data about the current user (used to determine whether the user is following their friend)
     const [currentUserData, setCurrentUserData] = useState(null);
-    const [pageLoading, setPageLoading] = useState(false);
+
+    // loading state for page
+    const [pageLoading, setPageLoading] = useState(true);
 
     const {user} = useAuth0();
     const navigate = useNavigate();
 
+    // first thing's first, we fetch our current user data
     useEffect(() => {
-        setPageLoading(true);
         fetch(`/api/getuser/${user.sub}`)
         .then(res => res.json())
         .then(data => setCurrentUserData(data.data))
         .then(setPageLoading(false))
     }, [])
 
+    // handler for dealing with search data, called within submitHandler
     const dataHandler = (data) => {
         if(data.status === 404){
             setLoading(false);
@@ -39,6 +51,7 @@ const Search = () => {
         }
     }
 
+    // submit handler for search button
     const submitHandler = (e) => {
         setLoading(true);
         e.preventDefault();
@@ -64,12 +77,12 @@ const Search = () => {
                         <button type="submit">search</button>
                     </Form>
                     <Container2>
-                        {   loading ?
+                        { loading ?
                             <span>Loading...</span>
-                            : userData.length === 0 ?
+                        : userData.length === 0 ?
                                 <span>{errMessage}</span>
-                            :
-                                <UserLookup friend={userData} userFollowing={currentUserData.following}/>
+                        :
+                                <UserLookup friend={userData} userFollowing={currentUserData?.following}/>
                         }
                     </Container2>
                 </Container>
@@ -121,7 +134,6 @@ const Form = styled.form`
 display: flex;
 flex-direction: column;
 flex-basis: 65%;
-/* justify-content: space-between; */
 `
 
 const Container = styled.div`
@@ -141,7 +153,6 @@ min-height: calc(100vh - 50px);
 display: flex;
 flex-direction: column;
 align-items: center;
-/* justify-content: center; */
 `
 
 export default Search;

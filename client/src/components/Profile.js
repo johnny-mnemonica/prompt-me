@@ -6,6 +6,8 @@ import LoadingSpinner from "./LoadingSpinner";
 
 const Profile = () => {
 
+    // NOTE: I am using a sepearte "DummyProfile" component for my other users, since I am fetching user information from dummyapi.io. The Profile component is ONLY for the currently logged in user.
+
     const navigate = useNavigate();
 
     const {id} = useParams();
@@ -40,8 +42,6 @@ const Profile = () => {
         .then(() => getPostFeed())
     }, [id]);
 
-    console.log(profileData?.imgSrc)
-
     return (
         <>
         { pageLoading ?
@@ -56,8 +56,8 @@ const Profile = () => {
                         <Container2>
                             <Img src={profileData.imgSrc} />
                             <Container3>
-                                <Title>{profileData?.nickname}</Title>
-                                <span>Following: {profileData?.following.length}</span>
+                                <Title>{profileData.nickname}</Title>
+                                <span>Following: {profileData.following.length}</span>
                             </Container3>
                         </Container2>
                         <Container4>

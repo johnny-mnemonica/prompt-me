@@ -7,10 +7,11 @@ import { motion } from 'framer-motion';
 
 const Homepage = () => {
 
-    const {isAuthenticated, isLoading, user} = useAuth0();
+    const {isAuthenticated, user} = useAuth0();
     const [postFeed, setPostFeed] = useState([]);
     const [loading, setLoading] = useState(true);
 
+    // function to fetch the user's main homefeed
     const getPostFeed = () => {
         fetch(`/api/gethomefeed/${user.sub}`)
         .then(res => res.json())
@@ -18,11 +19,8 @@ const Homepage = () => {
         .then(res => {if(postFeed){setLoading(false)}})
     }
 
-    console.log(postFeed);
-
-    
+    // when the user logs in for the first time, a post request is made to build a data structure that will contain the user's data and future posts. if the structure already exists, nothing happens.
     useEffect(() => {
-        // setLoading(true);
         if(isAuthenticated){
             fetch("/api/createuser", {
                 method: 'POST',
@@ -30,60 +28,65 @@ const Homepage = () => {
                     'Content-Type': 'application/json',
                     "Accept": "application/json"
                 },
-                body: JSON.stringify({_id: user.sub, given_name: user.given_name, family_name: user.family_name, name: user.name, nickname: user.nickname, imgSrc: user.picture, email: user.email})
+                body: JSON.stringify({
+                    _id: user.sub, 
+                    given_name: user.given_name, 
+                    family_name: user.family_name, 
+                    name: user.name, 
+                    nickname: user.nickname, 
+                    imgSrc: user.picture, 
+                    email: user.email})
                 })
-                .then(() => getPostFeed())
-                .catch((err) => {
-                    console.log(err);
-                })
-                
+            .then(() => getPostFeed())
+            .catch((err) => {
+                console.log(err);
+                window.alert("Oops - something went wrong! Please try again.");
+            })
         }
     }, [])
-
-
 
     return (
         <>
         <Wrapper>
             <Container>
-            <Link to="/create-post">
-                <Button>
-                    create new post
-                </Button>
-            </Link>
-            <Link to={`/profile/${user.sub}`}>
-                <Button>
-                    my profile
-                </Button>
-            </Link>
-            <Link to={`/search`}>
-                <Button>
-                    find friends
-                </Button>
-            </Link>
+                <Link to="/create-post">
+                    <Button>
+                        create new post
+                    </Button>
+                </Link>
+                <Link to={`/profile/${user.sub}`}>
+                    <Button>
+                        my profile
+                    </Button>
+                </Link>
+                <Link to={`/search`}>
+                    <Button>
+                        find friends
+                    </Button>
+                </Link>
             </Container>
             <Container2>
-            <Span
-            initial={{opacity: 0, y: -20}}
-            animate={{opacity: 1, y: 0}}
-            transition={{ duration: 1.5 }}>
-                Welcome, {user.nickname}.
-            </Span>
-            <Container3>
-            {
-                loading ?
-                <Span2>Loading...</Span2>
-                : postFeed.length === 0 ?
-                <Span2>there's nothing to see here (yet)! create a new post or follow a friend to get started.</Span2>
-                :
-                <PostFeed data={postFeed} />
-            }
-            </Container3>
+                <Span
+                initial={{opacity: 0, y: -20}}
+                animate={{opacity: 1, y: 0}}
+                transition={{ duration: 1.5 }}>
+                    Welcome, {user.nickname}.
+                </Span>
+                <Container3>
+                    { loading ?
+                        <Span2>Loading...</Span2>
+                    : postFeed.length === 0 ?
+                        <Span2>there's nothing to see here (yet)! create a new post or follow a friend to get started.</Span2>
+                    :
+                        <PostFeed data={postFeed} />
+                    }
+                </Container3>
             </Container2>
-            </Wrapper>
+        </Wrapper>
         </>
     )
 }
+
 const Container3 = styled.div`
 margin-top: 2%;
 margin-left: 1%;
@@ -101,7 +104,6 @@ const Wrapper = styled.div`
 display: flex;
 flex-direction: row;
 margin-top: 5%;
-/* width: 100%; */
 `
 
 const Span2 = styled.span`

@@ -9,8 +9,13 @@ const UserLookup = ({friend, userFollowing}) => {
 
     const {user} = useAuth0();
 
+    // loading state triggered when user follows their friend
     const [loading, setLoading] = useState(false);
+
+    // state variable passed to following button as props in order to disable after user clicks
     const [following, setFollowing] = useState(false);
+
+    // state variable to capture 400 error
     const [error, setError] = useState(false)
 
     const followFriendHandler = () => {
@@ -39,34 +44,30 @@ const UserLookup = ({friend, userFollowing}) => {
         }
     }
 
-    //TODO: setError 400: you are already following this user!
-    console.log(friend);
     return (
         <>
-        {
-            error ?
+        { error ?
                 <span>You're already following this user!</span>
-            :   
-        <Container>
-            <Container2>
-                <Img src={friend.picture} />
-                <Link to={`/dummyprofile/${friend.id}`}>
-                    {friend.firstName} {friend.lastName}
-                </Link>
-            </Container2>
-        {
-            userFollowing.includes(friend.id) || following ?
-            <Button disabled>following</Button>
-            :
-            <button onClick={followFriendHandler}>
-                {!loading ?
-                    "+"
+        :   
+            <Container>
+                <Container2>
+                    <Img src={friend.picture} />
+                    <Link to={`/dummyprofile/${friend.id}`}>
+                        {friend.firstName} {friend.lastName}
+                    </Link>
+                </Container2>
+            { userFollowing.includes(friend.id) || following ?
+                    <Button disabled>following</Button>
                 :
-                    <PulseLoader size={8} color={"#ed9a34"} />
-                }
-            </button>
-        }
-        </Container>
+                    <button onClick={followFriendHandler}>
+                        {!loading ?
+                            "+"
+                        :
+                            <PulseLoader size={8} color={"#ed9a34"} />
+                        }
+                    </button>
+            }
+            </Container>
         }
         </>
     )
@@ -99,7 +100,6 @@ const Button = styled.button`
 &:disabled {
     cursor: not-allowed;
     background: rgba(252,210,70,.35);
-    /* color: rgba(255, 255, 255, 0.75); */
 }
 `
 
