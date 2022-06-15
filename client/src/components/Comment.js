@@ -41,7 +41,7 @@ const Comment = ({data, postData, setAddedNewComment, setCommentLoading}) => {
                 { user.sub === data.author ?
                     <Link to={`/profile/${user.sub}`}>{data.authorName}</Link>
                 :
-                    <span>{data.authorName}</span>
+                <Link to={`/dummyprofile/${data.author}`}>{data.authorName}</Link>
                 }
                 <Span2> • {date}</Span2>
                 
