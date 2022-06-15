@@ -166,8 +166,8 @@ const getPostsbyUserId = async (req, res) => {
 }
 
 //////////////////////////////////////////////////////////
-//GET following by user ID
 
+//GET following by user ID
 const getFollowing = async (req, res) => {
     try {
         const client = new
@@ -206,7 +206,6 @@ const getFollowing = async (req, res) => {
 
 //////////////////////////////////////////////////////////
 
-
 // GET posts by id
 const getPostsById = async (req, res) => {
     try {
@@ -240,6 +239,7 @@ const getPostsById = async (req, res) => {
         .json({status: 500, message: err.message})
     }
 }
+
 //////////////////////////////////////////////////////////
 
 //GET coments by post ID
@@ -276,6 +276,7 @@ const getCommentsByPostsId = async (req, res) => {
         .json({status: 500, message: err.message})
     }
 }
+
 //////////////////////////////////////////////////////////
 
 //GET user's homefeed
@@ -349,7 +350,6 @@ const getHomeFeed = async (req, res) => {
         .json({status: 500, message: err.message})
     }
 }
-
 
 //////////////////////////////////////////////////////////
 
