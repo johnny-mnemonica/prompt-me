@@ -5,6 +5,8 @@ Users can create an account, add friends, and interact with their posts. Randomi
 
 ![Screen Shot 2022-06-29 at 5 39 29 PM](https://user-images.githubusercontent.com/101420263/176561296-e356f413-e023-4001-a2c6-d423a8708412.png)
 
+:) check out my app demo here: https://www.youtube.com/watch?v=iLjv6B3zmGA
+more features to come soon! 
 
 This web application is bootstrapped with `create-react-app`.
 User authentication is provided by [Auth0](https://auth0.com/).
